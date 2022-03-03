@@ -2,6 +2,15 @@
 
 This sample application demonstrates a simple order fulfillment system, decomposed into multiple independent components (like _microservices_).
 
+To run the choreography-based version of the Flowing Retail project for lab04 you need to execute:
+
+```
+  $ docker-compose -f docker-compose-kafka-java-choreography.yml up
+```
+from the directory [runner/docker-compose](runner/docker-compose).
+
+The rest of this README file is the original one provided by Bernd Rücker.
+
 The repository contains code for multiple implementation alternatives to allow a broad audience to understand the code and to compare alternatives. The [table below](#alternatives) lists these alternatives.
 
 The example respects learnings from **Domain Driven Design (DDD)**, Event Driven Architecture (EDA) and **Microservices (µS)** and is designed to give you hands-on access to these topics.
