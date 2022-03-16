@@ -9,6 +9,14 @@ To run the choreography-based version of the Flowing Retail project for lab04 yo
 ```
 from the directory [runner/docker-compose](runner/docker-compose).
 
+To run the Camunda-based version of the Flowing Retail project for lab07 you need to execute:
+
+```
+  $ docker-compose -f docker-compose-kafka-java-order-camunda.yml up
+```
+from the directory [runner/docker-compose](runner/docker-compose).
+
+
 The rest of this README file is the original one provided by Bernd Rücker.
 
 The repository contains code for multiple implementation alternatives to allow a broad audience to understand the code and to compare alternatives. The [table below](#alternatives) lists these alternatives.
