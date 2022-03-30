@@ -2,21 +2,31 @@
 
 This sample application demonstrates a simple order fulfillment system, decomposed into multiple independent components (like _microservices_).
 
-To run the choreography-based version of the Flowing Retail project for lab04 you need to execute:
+To run the **Choreography-based** version of the Flowing Retail project for lab04 you need to execute:
 
 ```
   $ docker-compose -f docker-compose-kafka-java-choreography.yml up
 ```
 from the directory [runner/docker-compose](runner/docker-compose).
 
-To run the Camunda-based version of the Flowing Retail project for lab07 you need to execute:
+To run the **Camunda-based** version of the Flowing Retail project for lab07 you need to execute:
 
 ```
   $ docker-compose -f docker-compose-kafka-java-order-camunda.yml up
 ```
 from the directory [runner/docker-compose](runner/docker-compose).
 
+To run the **Zeebe-based** version of the Flowing retail project for lab11 you need to execute:
+```
+  $ docker-compose -f docker-compose-kafka-java-order-zeebe.yml up
+```
+from the directory [runner/docker-compose](runner/docker-compose). This brings everything except the [order-zeebe](/kafka/java/order-zeebe) service up.
+Afterwards you need to start the [OrderFulfillmentApplication](/kafka/java/order-zeebe/src/main/java/io/flowing/retail/kafka/order/OrderFulfillmentApplication.java) as dedicated Spring Boot application.
+Hint: If you want to use the local Zeebe services you need to have the ''Self-managed local Zeebe'' configuration
+active in your [application.properties](/kafka/java/order-zeebe/src/main/resources/application.properties) file. If you want
+to use the hosted Camunda Cloud configuration you need to configure your Camunda Cloud credentials here.
 
+---
 The rest of this README file is the original one provided by Bernd Rücker.
 
 The repository contains code for multiple implementation alternatives to allow a broad audience to understand the code and to compare alternatives. The [table below](#alternatives) lists these alternatives.
