@@ -44,16 +44,16 @@ services:
       - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
       - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
 
-  order:
-    image: flowingretail/kafka-java-order-zeebe
-    networks:
-      - flowing
-    depends_on:
-      - kafka
-      - zeebe
-    environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181      
+#  order:
+#    image: flowingretail/kafka-java-order-zeebe
+#    networks:
+#      - flowing
+#    depends_on:
+#      - kafka
+#      - zeebe
+#    environment:
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
 
   payment:
     image: flowingretail/kafka-java-payment
@@ -105,8 +105,12 @@ services:
       - "8099:80"
 
   zeebe:
-    image: camunda/zeebe:1.2.1
+    image: camunda/zeebe:${CAMUNDA_CLOUD_VERSION:-1.3.5}
     hostname: zeebe
+    environment:
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
     networks:
       - flowing
     ports:
@@ -119,20 +123,29 @@ services:
       - elasticsearch
 
   operate:
-    image: camunda/operate:1.2.0
+    image: camunda/operate:${CAMUNDA_CLOUD_VERSION:-1.3.5}
+    environment:
+      - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
-      - "8080:8080"    
+      - "8080:8080"
     networks:
-      - flowing 
-      
+      - flowing
+
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.16.1}
     ports:
       - "9200:9200"
     environment:
       - discovery.type=single-node
       - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - zeebe_elasticsearch_data:/usr/share/elasticsearch/data
     networks:
