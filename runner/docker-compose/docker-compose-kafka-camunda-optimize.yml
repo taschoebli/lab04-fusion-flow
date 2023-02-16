@@ -94,8 +94,6 @@ services:
       - kafka
       - optimize
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=zookeeper:2181
       - CAMUNDA_OPTIMIZE_INGESTION_ENDPOINT=http://optimize:8090/api/ingestion/event/batch
       - CAMUNDA_OPTIMIZE_INGESTION_ACCESSTOKEN=mytoken
 
@@ -107,9 +105,6 @@ services:
       - "8095:8095"
     depends_on:
       - kafka
-    environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=zookeeper:2181
 
 ####
 volumes:

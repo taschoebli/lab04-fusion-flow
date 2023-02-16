@@ -2,12 +2,24 @@
 
 This sample application demonstrates a simple order fulfillment system, decomposed into multiple independent components (like _microservices_).
 
-To run the **Choreography-based** version of the Flowing Retail project for lab04 you need to execute:
+## Lab04 
+
+To run the **Choreography-based** version of the Flowing Retail project for lab04 you first need to be sure that all
+the relevant projects have been built at least once:
 
 ```
-  $ docker-compose -f docker-compose-kafka-java-choreography.yml up
+  $ cd .\kafka\java\
+  $ mvn
+```
+
+Then you can execute:
+
+```
+  $ docker-compose -f docker-compose-kafka-java-choreography.yml up --build
 ```
 from the directory [runner/docker-compose](runner/docker-compose).
+
+## Lab07
 
 To run the **Camunda-based** version of the Flowing Retail project for lab07 you need to execute:
 
@@ -15,6 +27,8 @@ To run the **Camunda-based** version of the Flowing Retail project for lab07 you
   $ docker-compose -f docker-compose-kafka-java-order-camunda.yml up
 ```
 from the directory [runner/docker-compose](runner/docker-compose).
+
+## Lab11
 
 To run the **Zeebe-based** version of the Flowing retail project for lab11 you need to execute:
 ```

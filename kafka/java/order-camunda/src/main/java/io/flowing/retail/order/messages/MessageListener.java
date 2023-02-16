@@ -1,27 +1,26 @@
 package io.flowing.retail.order.messages;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.spin.plugin.variable.SpinValues;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.flowing.retail.order.domain.Order;
 import io.flowing.retail.order.persistence.OrderRepository;
 
 @Component
-@EnableBinding(Sink.class)
 public class MessageListener {
   
   @Autowired
@@ -35,14 +34,8 @@ public class MessageListener {
   
   /**
    * Handles incoming OrderPlacedEvents. 
-   * 
-   *  Using the conditional {@link StreamListener} from 
-   * https://github.com/spring-cloud/spring-cloud-stream/blob/master/spring-cloud-stream-core-docs/src/main/asciidoc/spring-cloud-stream-overview.adoc
-   * in a way close to what Axion
-   *  would do (see e.g. https://dturanski.wordpress.com/2017/03/26/spring-cloud-stream-for-event-driven-architectures/)
+   *
    */
-  @StreamListener(target = Sink.INPUT, 
-      condition="(headers['type']?:'')=='OrderPlacedEvent'")
   @Transactional
   public void orderPlacedReceived(Message<Order> message) throws JsonParseException, JsonMappingException, IOException {
     Order order = message.getData();
@@ -66,12 +59,14 @@ public class MessageListener {
    *  
    * It might make more sense to handle each and every message type individually.
    */
-  @StreamListener(target = Sink.INPUT, 
-      condition="(headers['type']?:'').endsWith('Event')")
   @Transactional
-  public void messageReceived(String messageJson) throws Exception {
+  @KafkaListener(id = "order", topics = MessageSender.TOPIC_NAME)
+  public void messageReceived(String messagePayloadJson, @Header("type") String messageType) throws Exception{
+    if ("OrderPlacedEvent".equals(messageType)) {
+      orderPlacedReceived(objectMapper.readValue(messagePayloadJson, new TypeReference<Message<Order>>() {}));
+    }
     Message<JsonNode> message = objectMapper.readValue( //
-        messageJson, //
+        messagePayloadJson, //
         new TypeReference<Message<JsonNode>>() {});
     
     long correlatingInstances = camunda.getRuntimeService().createExecutionQuery() //
@@ -88,8 +83,7 @@ public class MessageListener {
             "PAYLOAD_" + message.getType(), // 
             SpinValues.jsonValue(message.getData().toString()).create())//
         .correlateWithResult();
-    } 
-    
-  }  
+    }
+  }
 
 }

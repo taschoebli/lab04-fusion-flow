@@ -1,4 +1,4 @@
-version: "3"
+version: "4"
 
 services:
   zookeeper:
@@ -34,7 +34,9 @@ services:
 
 
   checkout:
-    image: flowingretail/kafka-java-checkout
+    build:
+      context: ../../kafka/java/checkout
+      dockerfile: Dockerfile
     networks:
       - flowing
     ports:
@@ -42,11 +44,12 @@ services:
     depends_on:
       - kafka
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   order:
-    image: flowingretail/kafka-java-order-camunda
+    build:
+      context: ../../kafka/java/order-camunda
+      dockerfile: Dockerfile
     networks:
       - flowing
     ports:
@@ -54,11 +57,12 @@ services:
     depends_on:
       - kafka
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181      
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   payment:
-    image: flowingretail/kafka-java-payment-camunda
+    build:
+      context: ../../kafka/java/payment-camunda
+      dockerfile: Dockerfile
     networks:
       - flowing
     ports:
@@ -66,31 +70,34 @@ services:
     depends_on:
       - kafka
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181  
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   inventory:
-    image: flowingretail/kafka-java-inventory
+    build:
+      context: ../../kafka/java/inventory
+      dockerfile: Dockerfile
     networks:
       - flowing
     depends_on:
       - kafka
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181  
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   shipping:
-    image: flowingretail/kafka-java-shipping
+    build:
+      context: ../../kafka/java/shipping
+      dockerfile: Dockerfile
     networks:
       - flowing
     depends_on:
       - kafka
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181        
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   monitor:
-    image: flowingretail/kafka-java-monitor
+    build:
+      context: ../../kafka/java/monitor
+      dockerfile: Dockerfile
     networks:
       - flowing
     ports:
@@ -98,8 +105,7 @@ services:
     depends_on:
       - kafka
     environment:
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181   
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   docs:
     image: flowingretail/docs
@@ -107,6 +113,8 @@ services:
       - flowing
     ports:
       - "8099:80"
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
 networks:
   flowing:

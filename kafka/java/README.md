@@ -5,8 +5,7 @@ This folder contains services written in Java that connect to Apache Kafka as me
 Tech stack:
 
 * Java 8
-* Spring Boot 2.1.x
-* Spring Cloud Streams
+* Spring Boot 2.6.x
 * Apache Kafka
 
 For the **workflow engine** you can decide between:
@@ -18,8 +17,7 @@ For the **workflow engine** you can decide between:
 # Run the application
 
 You can either
-
-* Docker Compose with pre-built images from Docker Hub (simplest)
+* 
 * Build (Maven) and start via Docker Compose
 * Build (Maven) and start manually (including Zookeeper, Kafka)
 

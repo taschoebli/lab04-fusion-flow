@@ -4,13 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,11 +16,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Component
-@EnableBinding(Sink.class)
 public class MessageSinkToOptimizeIngestListener {
 
   private static Logger log = LoggerFactory.getLogger(MessageSinkToOptimizeIngestListener.class);
-  
+  public static final String TOPIC_NAME = "flowing-retail";
+
+
   @Value("${camunda.optimize.ingestion.endpoint:http://localhost:8090/api/ingestion/event/batch}")
   private String optimizeIngestionEndpoint;
   @Value("${camunda.optimize.ingestion.accessToken}")
@@ -34,7 +33,7 @@ public class MessageSinkToOptimizeIngestListener {
   @Autowired
   private ObjectMapper objectMapper;
 
-  @StreamListener(target = Sink.INPUT)
+  @KafkaListener(id = "camunda-optimize", topics = TOPIC_NAME)
   public void messageReceived(String messageJson) throws Exception { 
 
     // Build array with exactly this one event
