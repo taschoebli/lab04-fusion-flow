@@ -11,7 +11,7 @@ import org.camunda.bpm.client.ExternalTaskClient;
  */
 public class CustomerCreditWorker {
 
-  private static final String BASE_URL = "http://localhost:8100/rest/engine/default/";
+  private static final String BASE_URL = "http://localhost:8100/engine-rest/";
 
   public static void main(String[] args) throws InterruptedException {
     // bootstrap the client
