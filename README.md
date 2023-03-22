@@ -34,8 +34,7 @@ To run the **Zeebe-based** version of the Flowing retail project for lab11 you n
 ```
   $ docker-compose -f docker-compose-kafka-java-order-zeebe.yml up
 ```
-from the directory [runner/docker-compose](runner/docker-compose). This brings everything except the [order-zeebe](/kafka/java/order-zeebe) service up.
-Afterwards you need to start the [OrderFulfillmentApplication](/kafka/java/order-zeebe/src/main/java/io/flowing/retail/kafka/order/OrderFulfillmentApplication.java) as dedicated Spring Boot application.
+from the directory [runner/docker-compose](runner/docker-compose). This uses the [order-zeebe](kafka/java/order-zeebe) project for handling the order workflow.
 Hint: If you want to use the local Zeebe services you need to have the ''Self-managed local Zeebe'' configuration
 active in your [application.properties](/kafka/java/order-zeebe/src/main/resources/application.properties) file. If you want
 to use the hosted Camunda Cloud configuration you need to configure your Camunda Cloud credentials here.
