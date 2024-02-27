@@ -91,7 +91,7 @@ services:
       - elasticsearch-data:/usr/share/elasticsearch/data
       - elasticsearch-logs:/usr/share/elasticsearch/logs
     restart: always
-    mem_limit: 2g
+    #mem_limit: 2g
 
   cambpm:
     image: registry.camunda.cloud/camunda-bpm-platform-ee:latest
@@ -102,7 +102,7 @@ services:
     ports:
       - 8080:8080
     restart: always
-    mem_limit: 1g
+    #mem_limit: 1g
 
   optimize:
     image: registry.camunda.cloud/optimize-ee/optimize:latest
@@ -121,7 +121,7 @@ services:
       - cambpm
       - elasticsearch
     restart: always
-    mem_limit: 2g
+    #mem_limit: 2g
     volumes:
       - ./OptimizeLicense.txt:/optimize/environment/OptimizeLicense.txt
 
