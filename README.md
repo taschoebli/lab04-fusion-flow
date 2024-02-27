@@ -9,7 +9,7 @@ the relevant projects have been built at least once:
 
 ```
   $ cd .\kafka\java\
-  $ mvn
+  $ mvn clean install
 ```
 
 Then you can execute:

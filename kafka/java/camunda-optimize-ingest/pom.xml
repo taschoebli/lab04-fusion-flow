@@ -8,8 +8,8 @@
 
 	<properties>
 		<maven.compiler.release>8</maven.compiler.release>
-		<spring-boot.version>2.2.5.RELEASE</spring-boot.version>
-		<spring-cloud-stream.version>Horsham.RELEASE</spring-cloud-stream.version>
+		<spring-boot.version>3.2.2</spring-boot.version>
+		<spring-cloud-stream.version>4.1.0</spring-cloud-stream.version>
 	</properties>
 
 	<dependencyManagement>

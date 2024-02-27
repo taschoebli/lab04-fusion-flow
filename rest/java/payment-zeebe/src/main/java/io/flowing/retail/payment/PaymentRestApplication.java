@@ -1,10 +1,10 @@
 package io.flowing.retail.payment;
 
+import io.camunda.zeebe.client.ZeebeClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import io.zeebe.client.ZeebeClient;
 
 @SpringBootApplication
 public class PaymentRestApplication {

@@ -5,26 +5,24 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.util.Collections;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.servlet.http.HttpServletResponse;
-
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.camunda.zeebe.client.api.worker.JobWorker;
+import io.camunda.zeebe.model.bpmn.Bpmn;
+import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-
-import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.client.api.worker.JobHandler;
-import io.zeebe.client.api.worker.JobWorker;
-import io.zeebe.model.bpmn.Bpmn;
-import io.zeebe.model.bpmn.BpmnModelInstance;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Step3: Use Zeebe state machine for long-running retry
@@ -44,12 +42,12 @@ public class PaymentRestHacksControllerV3 {
   public void createFlowDefinition() {
     BpmnModelInstance flow = Bpmn.createExecutableProcess("paymentV3") //
         .startEvent() //
-        .serviceTask("stripe").zeebeTaskType("charge-creditcard-v3") //
-          .zeebeTaskRetries(2) //        
+        .serviceTask("stripe").zeebeJobType("charge-creditcard-v3") //
+            .zeebeJobRetries("2") //
         .endEvent().done();
     
-    zeebe.newDeployCommand() // 
-      .addWorkflowModel(flow, "payment.bpmn") //
+    zeebe.newDeployResourceCommand() //
+      .addProcessModel(flow, "payment.bpmn") //
       .send().join();
 
     worker = zeebe.newWorker()

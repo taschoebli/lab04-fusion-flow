@@ -116,7 +116,7 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   zeebe:
-    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.0.2}
+    image: camunda/zeebe:latest
     hostname: zeebe
     environment:
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
@@ -135,7 +135,7 @@ services:
       - elasticsearch
 
   operate:
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.0.2}
+    image: camunda/operate:latest
     container_name: operate
     environment:
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
@@ -150,7 +150,7 @@ services:
       - elasticsearch
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.0}
+    image: docker.elastic.co/elasticsearch/elasticsearch:latest
     container_name: elasticsearch
     ports:
       - "9200:9200"
