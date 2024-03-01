@@ -71,6 +71,17 @@ services:
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
+  notification:
+    build:
+      context: ../../kafka/java/choreography-alternative/notification
+      dockerfile: Dockerfile
+    networks:
+      - flowing
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
   shipping:
     build:
       context: ../../kafka/java/choreography-alternative/shipping
