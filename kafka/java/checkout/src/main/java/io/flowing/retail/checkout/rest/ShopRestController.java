@@ -4,6 +4,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,10 +21,13 @@ public class ShopRestController {
   
   @Autowired
   private MessageSender messageSender;
-  
+
+  Logger logger = LoggerFactory.getLogger(ShopRestController.class);
+
   @RequestMapping(path = "/api/cart/order", method = PUT)
   public String placeOrder(@RequestParam(value = "customerId") String customerId) {
-    
+
+    logger.info("order received: " + customerId);
     Order order = new Order();
     order.addItem("article1", 5);
     order.addItem("article2", 10);
