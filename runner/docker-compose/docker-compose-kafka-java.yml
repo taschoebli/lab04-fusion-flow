@@ -42,10 +42,13 @@ services:
       - flowing
     ports:
       - "8091:8091"
+      - "5005:5005"
     depends_on:
       - kafka
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n"
+
 
   payment:
     build:
@@ -55,10 +58,13 @@ services:
       - flowing
     ports:
       - "8093:8093"
+      - "5006:5006"
     depends_on:
       - kafka
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5006,server=y,suspend=n"
+
 
   inventory:
     build:
@@ -66,10 +72,13 @@ services:
       dockerfile: Dockerfile
     networks:
       - flowing
+    ports:
+      - "5007:5007"
     depends_on:
       - kafka
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5007,server=y,suspend=n"
 
   notification:
     build:
@@ -78,11 +87,12 @@ services:
     networks:
       - flowing
     ports:
-      - "5005:5005"
+      - "5008:5008"
     depends_on:
       - kafka
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5008,server=y,suspend=n"
 
   shipping:
     build:
@@ -90,10 +100,13 @@ services:
       dockerfile: Dockerfile
     networks:
       - flowing
+    ports:
+      - "5009:5009"
     depends_on:
       - kafka
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5009,server=y,suspend=n"
 
   monitor:
     build:
@@ -103,10 +116,12 @@ services:
       - flowing
     ports:
       - "8095:8095"
+      - "5010:5010"
     depends_on:
       - kafka
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5010,server=y,suspend=n"
 
   docs:
     image: flowingretail/docs
