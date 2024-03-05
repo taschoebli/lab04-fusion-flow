@@ -47,8 +47,8 @@ public class MessageListener {
       // the totalSum needs to be calculated by the checkout in this case - responsibility unclear
       // as this is not done we have to calculate it here - which means we have to learn to much about orders!
       // Bad smell 3 (order context missing)
-      //long amount = payload.get("items").iterator().next().get("amount").asLong();
-      long amount = payload.get("totalSum").asLong();
+      long amount = payload.get("items").iterator().next().get("amount").asLong();
+      //long amount = payload.get("totalSum").asLong();
 
       String notificationId = notificationService.createEmailNotification(orderId, amount);
 
