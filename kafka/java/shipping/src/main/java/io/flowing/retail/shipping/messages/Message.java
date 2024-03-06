@@ -1,17 +1,18 @@
 package io.flowing.retail.shipping.messages;
 
-import java.util.Date;
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.time.Instant;
+import java.util.UUID;
 
 public class Message<T> {
 
   // Cloud Events compliant 
   private String type;
   private String id = UUID.randomUUID().toString(); // unique id of this message
-  private String source="Shipping";
-  private Date time = new Date();
+  private String source = "Shipping-Choreography";
+  @JsonFormat(shape = JsonFormat.Shape.STRING) // ISO-8601 compliant format
+  private Instant time = Instant.now();
   private T data;
   private String datacontenttype="application/json";
   private String specversion="1.0";
@@ -56,11 +57,11 @@ public class Message<T> {
     this.id = id;
   }
 
-  public Date getTime() {
+  public Instant getTime() {
     return time;
   }
 
-  public void setTime(Date time) {
+  public void setTime(Instant time) {
     this.time = time;
   }
 
@@ -84,9 +85,8 @@ public class Message<T> {
     return correlationid;
   }
 
-  public Message<T> setCorrelationid(String correlationid) {
+  public void setCorrelationid(String correlationid) {
     this.correlationid = correlationid;
-    return this;
   }
 
   public String getSource() {
