@@ -8,12 +8,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<modules>
-		<module>checkout</module>
+		<module>booking</module>
 		<module>payment</module>
-		<module>inventory</module>
-		<module>shipping</module>
 		<module>notification</module>
 		<module>monitor</module>
+		<module>qrInvoice</module>
+		<module>accounting</module>
+		<module>bank</module>
 	</modules>
 
 	<build>

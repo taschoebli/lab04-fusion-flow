@@ -38,7 +38,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>              
                 <configuration>                         
-    				  <mainClass>io.flowing.retail.notification.NotificationApplication</mainClass>
+    				  <mainClass>io.flowing.retail.io.flowing.retail.io.flowing.retail.qrInvoice.AccountingApplication</mainClass>
                 </configuration>
              </plugin>
 			 <plugin>

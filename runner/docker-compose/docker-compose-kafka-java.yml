@@ -34,9 +34,9 @@ services:
       - zookeeper
 
 
-  checkout:
+  booking:
     build:
-      context: ../../kafka/java/checkout
+      context: ../../kafka/java/booking
       dockerfile: Dockerfile
     networks:
       - flowing
@@ -122,6 +122,48 @@ services:
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5010,server=y,suspend=n"
+
+  accounting:
+    build:
+      context: ../../kafka/java/accounting
+      dockerfile: Dockerfile
+    networks:
+      - flowing
+    ports:
+      - "5011:5011"
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5011,server=y,suspend=n"
+
+  bank:
+    build:
+      context: ../../kafka/java/bank
+      dockerfile: Dockerfile
+    networks:
+      - flowing
+    ports:
+      - "5012:5012"
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5012,server=y,suspend=n"
+
+  qrinvoice:
+    build:
+      context: ../../kafka/java/qrInvoice
+      dockerfile: Dockerfile
+    networks:
+      - flowing
+    ports:
+      - "5013:5013"
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5013,server=y,suspend=n"
 
   docs:
     image: flowingretail/docs
