@@ -50,6 +50,44 @@ public class MessageListener {
                       "NotificationEvent", //
                       message.get("traceid").asText(), //
                       payload));
+
+    } else if ("QRInvoiceCreatedEvent".equals(messageType)) {
+      JsonNode message = objectMapper.readTree(messageJson);
+      ObjectNode payload = (ObjectNode) message.get("data");
+
+      // TODO implement the logic here
+
+      messageSender.send( //
+              new Message<JsonNode>( //
+                      "NotificationEvent", //
+                      message.get("traceid").asText(), //
+                      payload));
+    }
+
+    else if ("BookingCreatedEvent".equals(messageType)) {
+      JsonNode message = objectMapper.readTree(messageJson);
+      ObjectNode payload = (ObjectNode) message.get("data");
+
+      // TODO implement the logic here
+
+      messageSender.send( //
+              new Message<JsonNode>( //
+                      "NotificationEvent", //
+                      message.get("traceid").asText(), //
+                      payload));
+    }
+
+    else if ("OverdueNoticeCreatedEvent".equals(messageType)) {
+      JsonNode message = objectMapper.readTree(messageJson);
+      ObjectNode payload = (ObjectNode) message.get("data");
+
+      // TODO implement the logic here
+
+      messageSender.send( //
+              new Message<JsonNode>( //
+                      "NotificationEvent", //
+                      message.get("traceid").asText(), //
+                      payload));
     }
   }
     

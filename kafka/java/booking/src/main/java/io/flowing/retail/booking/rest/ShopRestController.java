@@ -27,12 +27,9 @@ public class ShopRestController {
     
     booking.setCustomer(new Customer("Camunda", "Zossener Strasse 55\n10961 Berlin\nGermany"));
     
-    Message<Booking> message = new Message<Booking>("EventBookedEvent", booking);
+    Message<Booking> message = new Message<Booking>("BookingCreatedEvent", booking);
     messageSender.send(message);
-        
-    // note that we cannot easily return an order id here - as everything is asynchronous
-    // and blocking the client is not what we want.
-    // but we return an own correlationId which can be used in the UI to show status maybe later
+
     return "{\"traceId\": \"" + message.getTraceid() + "\"}";
   }
 

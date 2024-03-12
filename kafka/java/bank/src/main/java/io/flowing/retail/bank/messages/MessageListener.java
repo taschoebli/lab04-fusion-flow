@@ -24,9 +24,7 @@ public class MessageListener {
   @KafkaListener(id = "io/flowing/retail/bank", topics = MessageSender.TOPIC_NAME)
   public void paymentReceived(String messageJson, @Header("type") String messageType) throws Exception {
     //TODO: do stuff here
-    if ("Booking".equals(messageType)) {
-
-    }
+    // So far nothing to do here
   }
     
 }
