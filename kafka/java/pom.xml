@@ -15,8 +15,7 @@
 		<module>qrInvoice</module>
 		<module>accounting</module>
 		<module>bank</module>
-	</modules>
-
+    </modules>
 	<build>
 		<defaultGoal>clean install</defaultGoal>		
 	</build>
