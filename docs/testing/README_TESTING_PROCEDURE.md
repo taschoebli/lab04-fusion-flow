@@ -5,7 +5,8 @@ This files describes how our system can be tested.
 Attention: Some event that can be tested are coupled with a live-system. Please keep in mind:
 
 1. Not more than x per minute
-2. Each booking events costs -.20 CHF / 20 EUR cents.
+2. Each booking events costs -.20 CHF / 20 EUR cents
+3. The API must not be used for other purposes other than testing
 
 Procedure:
 1. Download and open the Postman Collection
