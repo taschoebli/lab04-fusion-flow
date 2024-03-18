@@ -9,6 +9,8 @@ public class Booking {
   private String orderId = "checkout-generated-" + UUID.randomUUID().toString();
   private Customer customer;
   private List<Item> items = new ArrayList<>();
+
+  private String date;
   
   public void addItem(String articleId, int amount) {
     // keep only one item, but increase amount accordingly
@@ -57,4 +59,8 @@ public class Booking {
   public void setCustomer(Customer customer) {
     this.customer = customer;
   }
+
+  public String getDate() { return date; }
+
+  public void setDate(String date) { this.date = date; }
 }

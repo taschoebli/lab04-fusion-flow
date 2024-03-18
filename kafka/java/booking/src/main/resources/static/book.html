@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book an event</title>
+</head>
+<body>
+    Place your booking: <br />
+    <img src="button.png" onclick="bookEvent()" style="width: 100px;"></img>
+    <div id="thanks"></div>
+</body>
+<script type="text/javascript">
+    var count = 0;
+    function bookEvent() {
+        $.ajax({
+            url: "./api/cart/book?customerId=123",
+            type: "put",
+            data: {}
+        }).done(function(result) {
+            count = count+1;
+            $('#thanks').html('Thank you for booking #' + count + '.<br>Trace id: <b>' + JSON.parse(result).traceId + '</b>');
+        })
+    }
+</script>
+<script src="./jquery.min.js"></script>
+</html>
