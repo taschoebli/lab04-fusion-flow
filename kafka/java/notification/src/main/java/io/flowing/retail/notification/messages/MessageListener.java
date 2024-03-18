@@ -55,13 +55,11 @@ public class MessageListener {
       JsonNode message = objectMapper.readTree(messageJson);
       ObjectNode payload = (ObjectNode) message.get("data");
 
-      // TODO implement the logic here
+      QRInvoiceCreatedEventPayload qrInvoice = objectMapper.readValue(payload.toString(),
+              QRInvoiceCreatedEventPayload.class);
 
-      messageSender.send( //
-              new Message<JsonNode>( //
-                      "NotificationEvent", //
-                      message.get("traceid").asText(), //
-                      payload));
+      System.out.println("Here is your Invoice for booling: " + qrInvoice.getBookingId());
+      System.out.println(qrInvoice.getBase64QrInvoice());
     }
 
     else if ("BookingCreatedEvent".equals(messageType)) {
