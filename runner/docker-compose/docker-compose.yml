@@ -130,6 +130,7 @@ services:
     networks:
       - flowing
     ports:
+      - "8092:8092"
       - "5013:5013"
     depends_on:
       - kafka

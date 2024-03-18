@@ -18,10 +18,10 @@ public class QrInvoiceAdapter implements JavaDelegate {
     MessageSender messageSender;
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        //Object totalCost = execution.getVariable("booking");
+        Object totalCost = execution.getVariable("booking");
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create("http://localhost:8091/api/qr/createQrInvoice?totalCost=125"))
+                .uri(URI.create("http://localhost:8092/api/qr/createQrInvoice?totalCost=125"))
                 .build();
 
         HttpResponse<String> response = HttpClient.newHttpClient()
