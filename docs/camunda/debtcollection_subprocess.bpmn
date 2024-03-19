@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xlwru4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xlwru4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
   <bpmn:process id="Process_05jkeua" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="StartEvent_1" name="Invoice created">
       <bpmn:outgoing>Flow_1xhysqv</bpmn:outgoing>
@@ -12,12 +12,14 @@
       <bpmn:outgoing>Flow_03jjke6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1g2w8nb" sourceRef="Activity_0uttpum" targetRef="Gateway_0t825tr" />
-    <bpmn:sequenceFlow id="Flow_1gtgg2i" name="Yes" sourceRef="Gateway_0t825tr" targetRef="Activity_0vc5f0t" />
+    <bpmn:sequenceFlow id="Flow_1gtgg2i" name="Yes" sourceRef="Gateway_0t825tr" targetRef="Activity_0vc5f0t">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{isCustomerApproved}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:receiveTask id="Activity_0vc5f0t" name="Payment received">
       <bpmn:incoming>Flow_1gtgg2i</bpmn:incoming>
       <bpmn:outgoing>Flow_1c9k0tk</bpmn:outgoing>
     </bpmn:receiveTask>
-    <bpmn:serviceTask id="Activity_0uttpum" name="Approve customer" camunda:delegateExpression="#{approveCustomer}">
+    <bpmn:serviceTask id="Activity_0uttpum" name="Approve customer" camunda:delegateExpression="#{approveCustomerAdapter}">
       <bpmn:incoming>Flow_1xhysqv</bpmn:incoming>
       <bpmn:outgoing>Flow_1g2w8nb</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -26,7 +28,9 @@
       <bpmn:incoming>Flow_1955o1m</bpmn:incoming>
       <bpmn:outgoing>Flow_030bh7w</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_03jjke6" name="No" sourceRef="Gateway_0t825tr" targetRef="Gateway_13ljkch" />
+    <bpmn:sequenceFlow id="Flow_03jjke6" name="No" sourceRef="Gateway_0t825tr" targetRef="Gateway_13ljkch">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!isCustomerApproved}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_030bh7w" sourceRef="Gateway_13ljkch" targetRef="Activity_14su02f" />
     <bpmn:serviceTask id="Activity_14su02f" name="Cancel order" camunda:delegateExpression="#{cancelOrder}">
       <bpmn:incoming>Flow_030bh7w</bpmn:incoming>
