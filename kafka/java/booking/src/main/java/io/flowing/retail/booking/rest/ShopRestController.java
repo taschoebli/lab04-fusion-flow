@@ -25,7 +25,7 @@ public class ShopRestController {
   private ObjectMapper objectMapper;
 
   @RequestMapping(path = "/api/cart/book", method = PUT)
-  public String placeOrder(@RequestParam(value = "date") String date) throws JsonProcessingException {
+  public String placeOrder(@RequestParam(value = "date") String date, @RequestParam(value= "invoice") boolean invoice) throws JsonProcessingException {
     Booking booking = new Booking();
     booking.addItem("article1", 5);
     booking.addItem("article2", 10);
@@ -37,7 +37,7 @@ public class ShopRestController {
 
     runtimeService.createMessageCorrelation("BookingCreated")
             .processInstanceBusinessKey(UUID.randomUUID().toString())
-            .setVariable("paymentTypeIsInvoice", true)
+            .setVariable("paymentTypeIsInvoice", invoice)
             .setVariable("booking", payLoad)
             .correlateWithResult();
 
