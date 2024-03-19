@@ -1,31 +1,51 @@
 package io.flowing.retail.booking.flow;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.flowing.retail.booking.messages.MessageSender;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import io.flowing.retail.booking.domain.Booking;
+import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
-import java.net.http.HttpRequest;
 
 @Component
+@Configuration
 public class QrInvoiceAdapter implements JavaDelegate {
 
     @Autowired
     MessageSender messageSender;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private RestTemplate rest;
+
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        //Object totalCost = execution.getVariable("booking");
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create("http://localhost:8091/api/qr/createQrInvoice?totalCost=125"))
-                .build();
+        Booking booking = objectMapper.readValue(execution.getVariable("booking").toString(), Booking.class);
+        String processId = execution.getProcessBusinessKey();
+        /*
+        messageSender.send(new Message<CreateQrInvoiceCommandPayload>("CreateQrInvoiceCommand", processId,
+                new CreateQrInvoiceCommandPayload()
+                        .setAmount(125)
+                        .setBookingId(booking.getOrderId())));*/
+        String base64QrCode = rest
+                .getForObject("http://qrinvoice:8092/api/qr/createQrInvoice?totalCost=15", String.class);
+        System.out.println("QR Invoice Created: " + base64QrCode);
+        execution.setVariable("qrInvoice", base64QrCode);
+    }
 
-        HttpResponse<String> response = HttpClient.newHttpClient()
-                .send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+    @Configuration
+    public static class Config {
+        @Bean
+        public RestTemplate restTemplate(RestTemplateBuilder builder) {
+            return builder.build();
+        }
     }
 }

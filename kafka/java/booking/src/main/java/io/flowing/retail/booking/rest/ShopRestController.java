@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.flowing.retail.booking.domain.Customer;
 import io.flowing.retail.booking.domain.Booking;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class ShopRestController {
@@ -35,13 +34,11 @@ public class ShopRestController {
     booking.setCustomer(new Customer("Camunda", "Zossener Strasse 55\n10961 Berlin\nGermany"));
 
     String payLoad = objectMapper.writeValueAsString(booking);
-    Map<String, String> vars = new HashMap<String, String>();
-    vars.put("booking", payLoad);
 
     runtimeService.createMessageCorrelation("BookingCreated")
-            .processInstanceBusinessKey("testBusinessKey")
+            .processInstanceBusinessKey(UUID.randomUUID().toString())
             .setVariable("paymentTypeIsInvoice", true)
-            .setVariable("booking", vars)
+            .setVariable("booking", payLoad)
             .correlateWithResult();
 
     return "Order received";
