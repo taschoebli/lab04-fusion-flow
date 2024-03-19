@@ -103,6 +103,7 @@ services:
       - flowing
     ports:
       - "5011:5011"
+      - "8097:8097"
     depends_on:
       - kafka
     environment:

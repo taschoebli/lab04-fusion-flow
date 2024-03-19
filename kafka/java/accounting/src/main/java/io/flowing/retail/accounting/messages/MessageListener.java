@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.flowing.retail.accounting.application.AccountingService;
+import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.UUID;
 
 @Component
 public class MessageListener {    
@@ -22,35 +25,24 @@ public class MessageListener {
   private AccountingService accountingService;
 
   @Autowired
+  private RuntimeService runtimeService;
+
+  @Autowired
   private ObjectMapper objectMapper;
 
   @Transactional
   @KafkaListener(id = "io/flowing/retail/accounting", topics = MessageSender.TOPIC_NAME)
-  public void qrInvoiceReceived(String messageJson, @Header("type") String messageType) throws Exception {
-    if ("QRInvoiceCreatedEvent".equals(messageType)) {
+  public void invoiceBookingCreated(String messageJson, @Header("type") String messageType) throws Exception {
+    if ("InvoiceBookingCreated".equals(messageType)) {
+
+      System.out.println("InvoiceBookingCreatedEvent Kafka received");
+
       JsonNode message = objectMapper.readTree(messageJson);
       ObjectNode payload = (ObjectNode) message.get("data");
 
-      // TODO implement the logic here
-      // check if the QR invoice is overdue
-
-        messageSender.send( //
-                new Message<JsonNode>( //
-                        "OverdueNoticeCreatedEvent", //
-                        message.get("traceid").asText(), //
-                        payload));
-    }
-    else if ("PaymentReceivedEvent".equals(messageType)) {
-      JsonNode message = objectMapper.readTree(messageJson);
-      ObjectNode payload = (ObjectNode) message.get("data");
-
-      // TODO implement the logic here
-
-      messageSender.send( //
-              new Message<JsonNode>( //
-                      "AccountingEvent", //
-                      message.get("traceid").asText(), //
-                      payload));
+      runtimeService.createMessageCorrelation("InvoiceCreated")
+              .processInstanceBusinessKey(UUID.randomUUID().toString())
+              .correlateWithResult();
     }
   }
     

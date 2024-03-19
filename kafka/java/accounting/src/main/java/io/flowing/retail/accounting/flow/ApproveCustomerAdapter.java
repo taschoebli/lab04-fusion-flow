@@ -34,10 +34,7 @@ public class ApproveCustomerAdapter implements JavaDelegate{
         /* TODO */
         // Check if customer is on blacklist
 
-        runtimeService.createMessageCorrelation("InvoiceCreated")
-                .processInstanceBusinessKey(UUID.randomUUID().toString())
-                .setVariable("isCustomerApproved", true)
-                .correlateWithResult();
+        execution.setVariable("isCustomerApproved", true);
 
     }
 }
