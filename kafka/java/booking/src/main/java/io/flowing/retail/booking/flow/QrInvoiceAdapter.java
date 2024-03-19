@@ -2,6 +2,7 @@ package io.flowing.retail.booking.flow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.flowing.retail.booking.messages.MessageSender;
+import jakarta.inject.Named;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @Configuration
+@Named
 public class QrInvoiceAdapter implements JavaDelegate {
 
     @Autowired

@@ -39,7 +39,7 @@ Use the following credentials to log in:
 Or find them [here.](kafka/java/booking/src/main/resources/application.yaml)
 
 ### Start a new process
-To start a new process, access [this link.](http://localhost/8091/book_test.html) Once you enter a date for your booking
+To start a new process, access [this link.](http://localhost:8091/book_test.html) Once you enter a date for your booking
 and press "book", you should be able to see that a new process instance has started, the process
 should be waiting for receiving the bank payment, as can be seen here:
 
