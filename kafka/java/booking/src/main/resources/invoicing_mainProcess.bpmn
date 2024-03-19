@@ -59,7 +59,7 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_0ikpmuy" messageRef="Message_31p6j6q" />
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0lw6i30" sourceRef="Activity_1a905wi" targetRef="Gateway_15ap4ea" />
-    <bpmn:receiveTask id="Activity_1a905wi" name="Retrieve bank transer payment" messageRef="Message_1hngm9r">
+    <bpmn:receiveTask id="Activity_1a905wi" name="Retrieve bank transer payment" messageRef="Message_2ki7lgu">
       <bpmn:incoming>Flow_0813q6w</bpmn:incoming>
       <bpmn:outgoing>Flow_0lw6i30</bpmn:outgoing>
     </bpmn:receiveTask>
@@ -74,6 +74,7 @@
   <bpmn:message id="Message_31p6j6q" name="BookingCreated" />
   <bpmn:message id="Message_0674pkb" name="Message_0674pkb" />
   <bpmn:message id="Message_1hngm9r" name="BankTransferRetrieved" />
+  <bpmn:message id="Message_2ki7lgu" name="BankTransferRetrievedNew" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0q8w3bv">
       <bpmndi:BPMNShape id="Gateway_19ezpd0_di" bpmnElement="Gateway_19ezpd0" isMarkerVisible="true">
