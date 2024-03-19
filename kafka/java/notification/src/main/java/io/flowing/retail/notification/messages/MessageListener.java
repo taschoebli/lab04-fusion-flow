@@ -58,7 +58,7 @@ public class MessageListener {
       QRInvoiceCreatedEventPayload qrInvoice = objectMapper.readValue(payload.toString(),
               QRInvoiceCreatedEventPayload.class);
 
-      System.out.println("Here is your Invoice for booling: " + qrInvoice.getBookingId());
+      System.out.println("Here is your Invoice for booking: " + qrInvoice.getBookingId());
       System.out.println(qrInvoice.getBase64QrInvoice());
     }
 
