@@ -18,7 +18,7 @@ public class InvoiceCreatedAdapter implements JavaDelegate {
     private ObjectMapper objectMapper;
 
     @Override public void execute(DelegateExecution execution) throws Exception {
-        String processId = execution.getProcessInstanceId();
+        String processId = execution.getProcessBusinessKey();
         Booking booking = objectMapper.readValue(execution.getVariable("booking").toString(), Booking.class);
 
         messageSender.send(new Message<InvoiceBookingCreatedEventPayload>("InvoiceBookingCreated", processId,

@@ -31,11 +31,11 @@ public class MessageListener {
 
       System.out.println("PaymentHandledEvent Kafka received");
 
-      //JsonNode message = objectMapper.readTree(messageJson);
-      //ObjectNode payload = (ObjectNode) message.get("data");
+      JsonNode message = objectMapper.readTree(messageJson);
+      String traceId = message.get("traceid").toString().replaceAll("\"", "");
 
       runtimeService.createMessageCorrelation("BankTransferRetrievedNew")
-              .processInstanceBusinessKey(UUID.randomUUID().toString())
+              .processInstanceBusinessKey(traceId)
               .correlateWithResult();
     }
   }

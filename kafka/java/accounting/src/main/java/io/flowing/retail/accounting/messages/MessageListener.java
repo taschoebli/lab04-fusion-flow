@@ -39,9 +39,10 @@ public class MessageListener {
 
       JsonNode message = objectMapper.readTree(messageJson);
       ObjectNode payload = (ObjectNode) message.get("data");
+      String traceId = message.get("traceid").toString().replaceAll("\"", "");
 
       runtimeService.createMessageCorrelation("InvoiceCreated")
-              .processInstanceBusinessKey(UUID.randomUUID().toString())
+              .processInstanceBusinessKey(traceId)
               .correlateWithResult();
     }
   }

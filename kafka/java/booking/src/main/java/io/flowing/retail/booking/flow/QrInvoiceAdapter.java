@@ -30,13 +30,6 @@ public class QrInvoiceAdapter implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        Booking booking = objectMapper.readValue(execution.getVariable("booking").toString(), Booking.class);
-        String processId = execution.getProcessBusinessKey();
-        /*
-        messageSender.send(new Message<CreateQrInvoiceCommandPayload>("CreateQrInvoiceCommand", processId,
-                new CreateQrInvoiceCommandPayload()
-                        .setAmount(125)
-                        .setBookingId(booking.getOrderId())));*/
         String base64QrCode = rest
                 .getForObject("http://qrinvoice:8092/api/qr/createQrInvoice?totalCost=15", String.class);
         System.out.println("QR Invoice Created: " + base64QrCode);

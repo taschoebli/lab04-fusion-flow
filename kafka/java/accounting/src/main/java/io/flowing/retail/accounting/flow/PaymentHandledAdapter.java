@@ -28,7 +28,7 @@ public class PaymentHandledAdapter implements JavaDelegate {
 
         System.out.println("Payment Handled Adapter");
 
-        String processId = execution.getProcessInstanceId();
+        String processId = execution.getProcessBusinessKey();
         //Booking booking = objectMapper.readValue(execution.getVariable("booking").toString(), Booking.class);
 
         messageSender.send(new Message<>("PaymentHandled", processId,
