@@ -79,3 +79,5 @@ The booking process waits for the Bank Payment Retrieved message, originating fr
 
 ## ADR (Architecture Decision Records)
 Please find all ADRs in the [docs/adr](docs/adr) folder.
+- Choosing between Camunda 7 and 8
+- Distinction between Orchestration and Choreography
