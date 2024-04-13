@@ -1,11 +1,12 @@
-# Flowing Retail
-
+# Fusion Flow
 This project simulates a typical business logic workflow using event-driven architecture. The implementation is based on
 the implementation of [flowing retail](https://github.com/scs-edpo/lab04-flowing-retail).
 We use Apache Kafka and Camunda Process orchestration to facilitate our workflow. 
 
+
 ## General description
 This project simulates the possible process of a customer booking an event at the Fusion Arena St. Gallen. Thereby, focus is on customers that pay via invoice. Since there is a need for a bank payment without live payment processing, the process has to make sure and check that the payment has been received before the booking is confirmed. The customer is given a time of 30 days to make the payment.
+
 
 ## Explicit references to the concepts of the lecture
 Apache Kafka is used as an open-source distributed event streaming platform. All seven implemented services, [accounting](kafka/java/accounting), [bank](kafka/java/bank), [booking](kafka/java/booking), [monitor](kafka/java/monitor), [notification](kafka/java/notification), [payment](kafka/java/payment) and [qrInvoice](kafka/java/qrInvoice) are connected via Kafka topics. Have a look at the messages folder for the corresponding kafka topics of each service. Kafka is used for the communication between the services and the orchestration of the processes.
@@ -16,9 +17,18 @@ No event-carried state transfer is used in this project. There was no need to up
 
 Camunda is used for the orchestration of the processes. The main process is the booking process, which is started when a new booking is made. The sub process is the accounting process, which is started when the booking process is waiting for the bank payment. The processes are orchestrated using the Camunda BPM platform for process & workflow orchestration. See in ADR section for explicit differentiation between orchestration and choreography.
 
+We explicitly (see ADR) decided not to use Zeebe, the new process engine of Camunda 8, since we are using Camunda 7.
+
+In lecture 6, [Sagas](https://www.youtube.com/watch?v=0UTOLRTwOX0) and "Stateful Resilience Patterns" were introduced. We use the "Epic Saga" (traditional saga pattern) in our project. The Saga pattern is a way to manage transactions that span multiple services. A saga is a sequence of local transactions. Each local transaction updates the database and publishes a message or event to trigger the next local transaction in the saga. If a local transaction fails because it violates a business rule then the saga executes a series of compensating transactions that undo the changes that were made by the preceding local transactions. The saga pattern is used in the booking process. If the customer decides to pay by card, the booking is directly confirmed. If the customer decides to pay by invoice, the booking is confirmed after the bank payment has been received. If the bank payment is not received within 30 days, the booking is cancelled. The saga pattern is used to manage the transactions of the booking process.
+
+As resilience pattern, human intervention is used. In the accounting subprocess, a blacklist with bad customers is used. If a customer is on the blacklist, the booking is cancelled. The blacklist is maintained by the accounting department. The accounting department is notified by the accounting service if a customer is on the blacklist. The accounting department can then decide if the customer should be removed from the blacklist or not. The accounting department can also add a customer to the blacklist. The accounting department is a human actor in the process. The accounting department is notified by the accounting service via email. The accounting department can then decide if the customer should be removed from the blacklist or not. The accounting department can also add a customer to the blacklist. The accounting department is a human actor in the process.
 
 
 
+## ADR (Architecture Decision Records)
+Please find all ADRs in the [docs/adr](docs/adr) folder.
+- Choosing between Camunda 7 and 8
+- Distinction between Orchestration and Choreography
 
 
 ## Building the project
@@ -77,7 +87,16 @@ Accounting Process:
 
 The booking process waits for the Bank Payment Retrieved message, originating from the Accounting process, after it notifies the accounting process, that a new booking has been made. We skip the entire process, if the customer decided to pay by card, since then we already have collected the money and the booking is valid.
 
-## ADR (Architecture Decision Records)
-Please find all ADRs in the [docs/adr](docs/adr) folder.
-- Choosing between Camunda 7 and 8
-- Distinction between Orchestration and Choreography
+## Collaboration
+All team members contributed equally to the group project.
+- [Luzi Schöb](https://github.com/taschoebli)
+- [David Seger](https://github.com/DavidSeger)
+- [Christoph Zweifel](https://github.com/c2fel)
+
+## Reflections & lessons learned
+- We learned how to use Apache Kafka as a message broker and how to connect services via Kafka topics.
+- We learned how to use Camunda for process orchestration.
+- We learned how to use Docker to containerize our services.
+- We learned how to use Maven & Spring to build our projects.
+- We all did not have any experience with Kafka  & Camunda. We would have profited more from the guest lecture from the Camunda team (Niall Deehan) if we had more experience with the tool. It would have been great if Camunda 8 was introduced in the lecture, since it is the recommended version for new projects. We regret having started with Camunda 7.
+- Group projects with small group size (not more than 3 people) are more efficient and effective. We had a good communication and could easily coordinate our tasks.
