@@ -2,7 +2,6 @@ package io.flowing.retail.accounting.messages;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.flowing.retail.accounting.application.AccountingService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +37,11 @@ public class MessageListener {
       System.out.println("InvoiceBookingCreatedEvent Kafka received");
 
       JsonNode message = objectMapper.readTree(messageJson);
-      ObjectNode payload = (ObjectNode) message.get("data");
       String traceId = message.get("traceid").toString().replaceAll("\"", "");
 
       runtimeService.createMessageCorrelation("InvoiceCreated")
               .processInstanceBusinessKey(traceId)
+              .setVariable("booking", message.get("data").toString())
               .correlateWithResult();
     }
   }

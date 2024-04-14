@@ -1,6 +1,7 @@
 package io.flowing.retail.accounting.flow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.flowing.retail.accounting.domain.Booking;
 import io.flowing.retail.accounting.messages.MessageSender;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -27,6 +28,10 @@ public class ApproveCustomerAdapter implements JavaDelegate{
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         System.out.println("Approve Customer Adapter");
+        Booking booking = objectMapper.readValue(execution.getVariable("booking").toString(), Booking.class);
+
+        System.out.println("Booking received! \nCustomer: " + booking.getCustomer().getName());
+        System.out.println("try to automatically approve customer now");
 
         boolean isCustomerApproved = true;
 
@@ -34,7 +39,7 @@ public class ApproveCustomerAdapter implements JavaDelegate{
         /* TODO */
         // Check if customer is on blacklist
 
-        execution.setVariable("isCustomerApproved", true);
+        execution.setVariable("isCustomerApproved", false);
 
     }
 }

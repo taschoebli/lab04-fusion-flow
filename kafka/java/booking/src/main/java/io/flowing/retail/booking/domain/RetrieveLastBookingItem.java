@@ -21,7 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.collect.ImmutableMap;
 
-public class retrieveLastBookingItem {
+public class RetrieveLastBookingItem {
 
 	private static final String HEADER_PUBLIC_KEY = "X-API-ID";
 	private static final String HEADER_TIME = "X-API-TIME";
