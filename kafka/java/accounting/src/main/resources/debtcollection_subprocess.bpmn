@@ -75,6 +75,9 @@
             <camunda:validation />
           </camunda:formField>
         </camunda:formData>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_1tmu98l" />
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_03jjke6</bpmn:incoming>
       <bpmn:outgoing>Flow_0cikdnw</bpmn:outgoing>
