@@ -90,7 +90,7 @@ The accounting process first passes the customer through an automatic booking re
 If the booking is deemed valid, either automatically through our system or by a human accountant, we set the process on hold and wait for the money to arrive. Our software waits for the arrival of a Kafka message from our bank, confirming that we received the money from the customer. Camunda automatically continues the process to cancel the order,
 if we do not receive any money within 30 days.
 
-## Implementation Details
+## Implementation Details and Related Architectural Decisions
 ### Main Process: Booking
 To be able to start up a new process, we created a simple HTML interface that is served via the spring framework. The Template takes a date and
 a boolean, indicating whether the customer wants to pay by card or invoice. This form sends out a request to a REST API endpoint, also provided with Spring, controlled by our [ShopRestController](kafka/java/booking/src/main/java/io/flowing/retail/booking/rest/ShopRestController.java) class.
@@ -119,7 +119,7 @@ Our [PaymentReceivedAdapter](kafka/java/accounting/src/main/java/io/flowing/reta
 Once that delegate is executed, our process moves on to the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java), where we create the PaymentHandled Kafka event, notifying our main process that this process instance has completed.
 
 In case the customer was found to be on our Blacklist, our stateful resistance pattern kicks in. We don't want to lose out on any possible sales, thus we
-give a human accountant the chance, to review the customers case, before making a final decision on whether to cancel the booking or to allow it. This is implemented 
+give a human accountant the chance to review the customers case, before making a final decision on whether to cancel the booking or to allow it. This is implemented 
 as a Camunda user task. The accountant can log into Camunda, check the running processes, claim any flagged bookings and review their case. Here he can also make the final decision on the validity of the booking.
 If the accountant decides to allow the booking, we return to the "accepted" execution path, where we wait for payment, as described above.
 If the booking has, once again, be deemed untrustworthy, or if we do not receive any notice by our bank that the payment has been made within 30 days of the booking, we begin cutting out losses and cancel the booking.
