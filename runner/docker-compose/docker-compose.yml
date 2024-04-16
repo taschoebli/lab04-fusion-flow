@@ -50,22 +50,6 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n"
 
-
-  payment:
-    build:
-      context: ../../kafka/java/payment
-      dockerfile: Dockerfile
-    networks:
-      - flowing
-    ports:
-      - "8093:8093"
-      - "5006:5006"
-    depends_on:
-      - kafka
-    environment:
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5006,server=y,suspend=n"
-
   notification:
     build:
       context: ../../kafka/java/notification
@@ -79,21 +63,6 @@ services:
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5008,server=y,suspend=n"
-
-  monitor:
-    build:
-      context: ../../kafka/java/monitor
-      dockerfile: Dockerfile
-    networks:
-      - flowing
-    ports:
-      - "8095:8095"
-      - "5010:5010"
-    depends_on:
-      - kafka
-    environment:
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5010,server=y,suspend=n"
 
   accounting:
     build:
@@ -109,20 +78,6 @@ services:
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5011,server=y,suspend=n"
-
-  bank:
-    build:
-      context: ../../kafka/java/bank
-      dockerfile: Dockerfile
-    networks:
-      - flowing
-    ports:
-      - "5012:5012"
-    depends_on:
-      - kafka
-    environment:
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5012,server=y,suspend=n"
 
   qrinvoice:
     build:

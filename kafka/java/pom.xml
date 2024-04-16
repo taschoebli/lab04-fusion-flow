@@ -9,12 +9,9 @@
 
 	<modules>
 		<module>booking</module>
-		<module>payment</module>
 		<module>notification</module>
-		<module>monitor</module>
 		<module>qrInvoice</module>
 		<module>accounting</module>
-		<module>bank</module>
     </modules>
 	<build>
 		<defaultGoal>clean install</defaultGoal>		

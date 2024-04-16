@@ -15,9 +15,6 @@ public class MessageListener {
   
   @Autowired
   private MessageSender messageSender;
-  
-  @Autowired
-  private QrInvoiceService bankService;
 
   @Autowired
   private ObjectMapper objectMapper;

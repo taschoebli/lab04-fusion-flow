@@ -17,26 +17,15 @@ public class PaymentHandledAdapter implements JavaDelegate {
     @Autowired
     private MessageSender messageSender;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private RuntimeService runtimeService;
-
     @Override
     public void execute(DelegateExecution execution) throws Exception {
 
         System.out.println("Payment Handled Adapter");
 
         String processId = execution.getProcessBusinessKey();
-        //Booking booking = objectMapper.readValue(execution.getVariable("booking").toString(), Booking.class);
 
         messageSender.send(new Message<>("PaymentHandled", processId,
                 ""));
 
-//        messageSender.send(new Message<PaymentHandledEventPayload>("PaymentHandled", processId,
-//                new PaymentHandledEventPayload()
-//                        .setCustomer(booking.getCustomer())
-//                        .setBookingId(booking.getOrderId())));
     }
 }
