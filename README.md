@@ -90,6 +90,43 @@ The accounting process first passes the customer through an automatic booking re
 If the booking is deemed valid, either automatically through our system or by a human accountant, we set the process on hold and wait for the money to arrive. Our software waits for the arrival of a Kafka message from our bank, confirming that we received the money from the customer. Camunda automatically continues the process to cancel the order,
 if we do not receive any money within 30 days.
 
+## Implementation Details
+### Main Process: Booking
+To be able to start up a new process, we created a simple HTML interface that is served via the spring framework. The Template takes a date and
+a boolean, indicating whether the customer wants to pay by card or invoice. This form sends out a request to a REST API endpoint, also provided with Spring, controlled by our [ShopRestController](kafka/java/booking/src/main/java/io/flowing/retail/booking/rest/ShopRestController.java) class.
+This endpoint builds the start message "booking created" that triggers our main Camunda Process. Camunda automatically checks for the payment type via direct expression, to choose the orchestration path.
+The QR invoice factory task is implemented by the [QrInvoiceAdapter](kafka/java/booking/src/main/java/io/flowing/retail/booking/flow/QrInvoiceAdapter.java) class.
+This delegate sends out a REST GET request to our [qrInvoice microservice](kafka/java/qrInvoice/src/main/java/qrInvoice/rest/QrFactoryRestController.java). 
+The microservice simply takes the amount that was handed to it via the API and creates a Base64 encoded string to return to the caller. We decided for a direct dependency, via REST call since the rest of the process depends on the availability of the QR invoice,
+we want to continue the process without being blocked by excessive waiting for an asynchronous answer. This creates stronger coupling and requires the QR service to be more resilient to outages,
+but because sending out an invoice is a central task in a checkout process, and we have enough waiting time in the following subprocess, we don't want to possibly block the process so early on.
+With the QR now created, we add this to the Camunda process message as a variable and continue on down the process to the parallel executed branches.
+Sending the invoice to the customer is simple, we chose to utilize an event instead of a command, as it is not all that time sensitive when the customer receives the bill.
+The [SendInvoiceAdapter](kafka/java/booking/src/main/java/io/flowing/retail/booking/flow/SendInvoiceAdapter.java) delegate sends out a Kafka message containing the QR bill string to any interested services (in this case, the [notification service](kafka/java/notification/src/main/java/io/flowing/retail/notification/messages/MessageListener.java), which catches the event and sends out the bill).
+Once again we opted for an event based trigger instead of a command, as this execution branch runs in parallel to another branch, which can take up to 30 days to complete, thus actually sending out the invoice is neither blocking the rest of the process, nor is it time sensitive compared to the 30-day time limit posed by the subprocess called in the paralel branch.
+
+While the invoice gets sent out to the customer, the [InvoiceCreatedAdapter](kafka/java/booking/src/main/java/io/flowing/retail/booking/flow/InvoiceCreatedAdapter.java) delegate sends out a similar, but distinct, event via Kafka, which triggers the accounting subprocess. A event is sufficient in this case, since paying a bill can take up to 30 days anyway, so time is not of the essence.
+This branch now waits for a Camunda message “BankTransferRetrievedNew”, which will be triggered via Kafka event "PaymentHandled" by the accounting process, once that has dealt with the new booking. The Kafka event that triggers the message is caught in the bookings [MessageListener](kafka/java/booking/src/main/java/io/flowing/retail/booking/messages/MessageListener.java). The "BankTransferRetrievedNew" Camunda message signifies the end of the booking process.
+
+### Sub Process: Accounting
+Our Accounting Microservice is subscribed to the kafka message sent out by the main process, we listen for it in the services [MessageListener](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/messages/MessageListener.java).
+Once the Camunda process is kicked off by this message, the software checks the creditworthiness of the customer by calling an external Database, containing a blacklist of customers we don't feel are trustworthy
+
+//TODO: implementation details zu automatic approval
+
+If the customer is approved, the process moves on to a passive state of waiting for a notification by the bank, that we received the money. The bank can reach us via a REST call, the controller for which is implemented in [AccountingRestController](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/rest/AccountingRestController.java).
+Our [PaymentReceivedAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentReceivedAdapter.java) class is the delegate tasked with handling this banking notification, here one could insert any business logic needed to bring our accounts into a correct state (e.g. mark the invoice as paid). This is another possibly boundary crossing Camunda throw message event, in case we need to inform further microservices about the successful payment.
+Once that delegate is executed, our process moves on to the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java), where we create the PaymentHandled Kafka event, notifying our main process that this process instance has completed.
+
+In case the customer was found to be on our Blacklist, our stateful resistance pattern kicks in. We don't want to lose out on any possible sales, thus we
+give a human accountant the chance, to review the customers case, before making a final decision on whether to cancel the booking or to allow it. This is implemented 
+as a Camunda user task. The accountant can log into Camunda, check the running processes, claim any flagged bookings and review their case. Here he can also make the final decision on the validity of the booking.
+If the accountant decides to allow the booking, we return to the "accepted" execution path, where we wait for payment, as described above.
+If the booking has, once again, be deemed untrustworthy, or if we do not receive any notice by our bank that the payment has been made within 30 days of the booking, we begin cutting out losses and cancel the booking.
+This happens in the [CancelOrderAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/CancelOrderAdapter.java) (here we can include any accounting business logic needed to bring us to a consistent state),
+and in the [InvoiceVoidedAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/InvoiceVoidedAdapter.java) (this is meant for any domain boundary crossing logic, here we would call the notification service to send an email informing the customer that their booking has been voided, and create a Kafka message that could be read by any interested Microservice),
+respectively. Finally, as the accounting department is in a consistent state and all relevant interested services have been notified, of the booking state, we finish the process by notifying the main booking process, again through the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java) delegate.
+
 ## Collaboration
 All team members contributed equally to the group project.
 - [Luzi Schöb](https://github.com/taschoebli)
