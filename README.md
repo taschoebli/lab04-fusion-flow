@@ -9,7 +9,7 @@ This project simulates the possible process of a customer booking an event at th
 
 
 ## Explicit references to the concepts of the lecture
-Apache Kafka is used as an open-source distributed event streaming platform. All seven implemented services, [accounting](kafka/java/accounting), [bank](kafka/java/bank), [booking](kafka/java/booking), [monitor](kafka/java/monitor), [notification](kafka/java/notification), [payment](kafka/java/payment) and [qrInvoice](kafka/java/qrInvoice) are connected via Kafka topics. Have a look at the messages folder for the corresponding kafka topics of each service. Kafka is used for the communication between the services and the orchestration of the processes.
+Apache Kafka is used as an open-source distributed event streaming platform. All four implemented services, [accounting](kafka/java/accounting), [booking](kafka/java/booking), [notification](kafka/java/notification) and [qrInvoice](kafka/java/qrInvoice) are connected via Kafka topics. Have a look at the messages folder for the corresponding kafka topics of each service. Kafka is used for the communication between the services and the orchestration of the processes.
 
 An event notification is for example created when a new booking is made. One Kafka topic was used called "flowing-retail" where events are distinguished among each other by name and service type. The advantage are decoupling, dependency inversion and that changes in one service do not affect the other services. The biggest disadvantage is that no statement of overall behaviour can be made.
 
@@ -56,7 +56,7 @@ from the directory [runner/docker-compose](runner/docker-compose).
 There is a [docker-compose](runner/docker-compose/docker-compose.yml) script that, when executed, launches all relevant project in docker.
 
 ### Accessing the Camunda cockpit
-To have an overview of the processes and the running instances, you have to access the Camunda Cockpits.
+To have an overview of the processes and the running instances, you have to access the Camunda Cockpits. It is suggested to use a private window (Incognito mode) to avoid any caching issues.
 
 - [Main process](http://localhost:8091/)
 - [Sub process](http://localhost:8097/)
@@ -118,9 +118,7 @@ If the customer is approved, the process moves on to a passive state of waiting 
 Our [PaymentReceivedAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentReceivedAdapter.java) class is the delegate tasked with handling this banking notification, here one could insert any business logic needed to bring our accounts into a correct state (e.g. mark the invoice as paid). This is another possibly boundary crossing Camunda throw message event, in case we need to inform further microservices about the successful payment.
 Once that delegate is executed, our process moves on to the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java), where we create the PaymentHandled Kafka event, notifying our main process that this process instance has completed.
 
-In case the customer was found to be on our Blacklist, our stateful resistance pattern kicks in. We don't want to lose out on any possible sales, thus we
-give a human accountant the chance to review the customers case, before making a final decision on whether to cancel the booking or to allow it. This is implemented 
-as a Camunda user task. The accountant can log into Camunda, check the running processes, claim any flagged bookings and review their case. Here he can also make the final decision on the validity of the booking.
+In case the customer was found to be on our Blacklist, our stateful resistance pattern kicks in. We don't want to lose out on any possible sales, thus we give a human accountant the chance to review the customers case, before making a final decision on whether to cancel the booking or to allow it. This is implemented as a Camunda user task. The accountant can log into Camunda, check the running processes, claim any flagged bookings and review their case. In the topright corner of the camunda interface, the user can select the Tasklist in order to find all the open user tasks and make the final decision on the validity of the booking.
 If the accountant decides to allow the booking, we return to the "accepted" execution path, where we wait for payment, as described above.
 If the booking has, once again, be deemed untrustworthy, or if we do not receive any notice by our bank that the payment has been made within 30 days of the booking, we begin cutting out losses and cancel the booking.
 This happens in the [CancelOrderAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/CancelOrderAdapter.java) (here we can include any accounting business logic needed to bring us to a consistent state),
