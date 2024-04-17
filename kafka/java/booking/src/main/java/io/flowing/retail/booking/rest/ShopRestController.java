@@ -25,14 +25,14 @@ public class ShopRestController {
   private ObjectMapper objectMapper;
 
   @RequestMapping(path = "/api/cart/book", method = PUT)
-  public String placeOrder(@RequestParam(value = "date") String date, @RequestParam(value= "invoice") boolean invoice) throws JsonProcessingException {
+  public String placeOrder(@RequestParam(value = "date") String date, @RequestParam(value= "invoice") boolean invoice, @RequestParam(value = "email") String email) throws JsonProcessingException {
     Booking booking = new Booking();
     booking.addItem("article1", 5);
     booking.addItem("article2", 10);
     booking.setDate(date);
-    
-    booking.setCustomer(new Customer("Camunda", "Zossener Strasse 55\n10961 Berlin\nGermany"));
 
+    booking.setCustomer(new Customer("Camunda", "Zossener Strasse 55\n10961 Berlin\nGermany"));
+    booking.setCustomerEmail(email);
     String payLoad = objectMapper.writeValueAsString(booking);
 
     runtimeService.createMessageCorrelation("BookingCreated")

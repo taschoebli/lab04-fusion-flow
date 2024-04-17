@@ -24,6 +24,7 @@ public class InvoiceCreatedAdapter implements JavaDelegate {
         messageSender.send(new Message<InvoiceBookingCreatedEventPayload>("InvoiceBookingCreated", processId,
                 new InvoiceBookingCreatedEventPayload()
                         .setCustomer(booking.getCustomer())
+                        .setCustomerEmail(booking.getCustomerEmail())
                         .setBookingId(booking.getOrderId())));
         }
 }

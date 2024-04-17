@@ -12,6 +12,8 @@ public class InvoiceBookingCreatedEventPayload {
         return bookingId;
     }
 
+    private String customerEmail;
+
     public InvoiceBookingCreatedEventPayload setBookingId(String bookingId){
         this.bookingId = bookingId;
         return this;
@@ -27,5 +29,12 @@ public class InvoiceBookingCreatedEventPayload {
     }
 
 
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
 
+    public InvoiceBookingCreatedEventPayload setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+        return this;
+    }
 }

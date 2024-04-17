@@ -39,14 +39,14 @@ public class ApproveCustomerAdapter implements JavaDelegate{
         System.out.println("Booking received! \nCustomer: " + booking.getCustomer().getName());
         System.out.println("try to automatically approve customer now");
 
-        String customerEmail = (String) execution.getVariable("customerEmail");
+        String customerEmail = booking.getCustomerEmail();
         System.out.println("Customer email: " + customerEmail);
 
         // Null check -> dummy email
         if (customerEmail == null) {
             customerEmail = "luzi.schoeb@student.unisg.ch";
         }
-        boolean isCustomerApproved = false;
+        boolean isCustomerApproved = true;
 
         if(blacklistRepository != null){
             var entries = blacklistRepository.findAll();

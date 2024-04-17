@@ -38,7 +38,6 @@ public class MessageListener {
 
       JsonNode message = objectMapper.readTree(messageJson);
       String traceId = message.get("traceid").toString().replaceAll("\"", "");
-
       runtimeService.createMessageCorrelation("InvoiceCreated")
               .processInstanceBusinessKey(traceId)
               .setVariable("booking", message.get("data").toString())

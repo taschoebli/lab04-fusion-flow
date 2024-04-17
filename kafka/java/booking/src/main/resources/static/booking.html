@@ -53,8 +53,10 @@
 <div class="container">
     <h1>Booking Form</h1>
     <form id="bookingForm">
-        <label for="date">Enter Date:</label>
+        <label for="date">Enter Date: </label>
         <input type="text" id="date" name="date" placeholder="YYYY-MM-DD" required>
+        <label for="mail">Enter E-Mail: </label>
+        <input type="text" id="mail" name="mail" placeholder="JamesT.Kirk@Starfleet.uss" required>
         <div style="display:flex; flex-direction: row; justify-content: left; align-items: center">
             <input type="checkbox" id="invoice" name="invoice">
             <label for="invoice">Pay by invoice</label>
@@ -64,9 +66,9 @@
 </div>
 
 <script>
-    function book(date, invoice) {
+    function book(date, invoice, email) {
         $.ajax({
-            url: "./api/cart/book?date=" + date + "&invoice=" + invoice,
+            url: "./api/cart/book?date=" + date + "&invoice=" + invoice + "&email=" + email,
             type: "put",
             data: {}
         }).done(function(result) {
@@ -79,7 +81,8 @@
         event.preventDefault();
         let date = document.getElementById("date").value;
         let invoice = document.getElementById("invoice").checked;
-        book(date, invoice);
+        let email = document.getElementById("mail").value;
+        book(date, invoice, email);
     });
 </script>
 <script src="./jquery.min.js"></script>
