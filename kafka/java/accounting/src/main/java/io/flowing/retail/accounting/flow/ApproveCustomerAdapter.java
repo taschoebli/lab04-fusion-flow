@@ -57,7 +57,7 @@ public class ApproveCustomerAdapter implements JavaDelegate{
             List<BlacklistEntry> blacklistEntries = blacklistRepository.findByEmail(customerEmail);
             isCustomerApproved = blacklistEntries.isEmpty();
         }
-        
+
         execution.setVariable("isCustomerApproved", isCustomerApproved);
         System.out.println("isCustomerApproved: " + isCustomerApproved);
 
