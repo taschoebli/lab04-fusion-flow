@@ -132,6 +132,7 @@ All team members contributed equally to the group project.
 ## Reflections & lessons learned
 - We learned how to use Apache Kafka as a message broker and how to connect services via Kafka topics.
 - We learned how to use Camunda for process orchestration.
+- We learned the best practices of modelling processes in Camunda. 
 - We learned how to use Docker to containerize our services.
 - We learned how to use Maven & Spring to build our projects.
 - We all did not have any experience with Kafka  & Camunda. We would have profited more from the guest lecture from the Camunda team (Niall Deehan) if we had more experience with the tool. It would have been great if Camunda 8 was introduced in the lecture, since it is the recommended version for new projects. We regret having started with Camunda 7.
