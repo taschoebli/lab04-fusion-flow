@@ -114,14 +114,26 @@ Once the Camunda process is kicked off by this message, the software checks the 
 
 If the customer is approved, the process moves on to a passive state of waiting for a notification by the bank, that we received the money. The bank can reach us via a REST call, the controller for which is implemented in [AccountingRestController](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/rest/AccountingRestController.java).
 Our [PaymentReceivedAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentReceivedAdapter.java) class is the delegate tasked with handling this banking notification, here one could insert any business logic needed to bring our accounts into a correct state (e.g. mark the invoice as paid). This is another possibly boundary crossing Camunda throw message event, in case we need to inform further microservices about the successful payment.
-Once that delegate is executed, our process moves on to the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java), where we create the PaymentHandled Kafka event, notifying our main process that this process instance has completed.
+Once that delegate is executed, our process moves on to the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java), where we create the PaymentHandled Kafka event, notifying our main process that this process instance has completed, and the customer that we received his payment.
 
 In case the customer was found to be on our Blacklist, our stateful resistance pattern kicks in. We don't want to lose out on any possible sales, thus we give a human accountant the chance to review the customers case, before making a final decision on whether to cancel the booking or to allow it. This is implemented as a Camunda user task. The accountant can log into Camunda, check the running processes, claim any flagged bookings and review their case. In the topright corner of the camunda interface, the user can select the Tasklist in order to find all the open user tasks and make the final decision on the validity of the booking.
 If the accountant decides to allow the booking, we return to the "accepted" execution path, where we wait for payment, as described above.
-If the booking has, once again, be deemed untrustworthy, or if we do not receive any notice by our bank that the payment has been made within 30 days of the booking, we begin cutting out losses and cancel the booking.
+If the booking has, once again, be deemed untrustworthy, or if we do not receive any notice by our bank that the payment has been made within 30 days of the booking, we begin cutting our losses and cancel the booking.
 This happens in the [CancelOrderAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/CancelOrderAdapter.java) (here we can include any accounting business logic needed to bring us to a consistent state),
 and in the [InvoiceVoidedAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/InvoiceVoidedAdapter.java) (this is meant for any domain boundary crossing logic, here we would call the notification service to send an email informing the customer that their booking has been voided, and create a Kafka message that could be read by any interested Microservice),
 respectively. Finally, as the accounting department is in a consistent state and all relevant interested services have been notified, of the booking state, we finish the process by notifying the main booking process, again through the [PaymentHandledAdapter](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/flow/PaymentHandledAdapter.java) delegate.
+
+### Cross-Domain Communication
+
+As described above, we decided for a mostly asynchronous, event based communication between domains. We could have used commands for retrieving the QR invoice and checking the customer blacklist,
+but since these are simple fetch/get operations for requesting a resource, we opted for direct coupling via REST APIs, as commands would be more appropriate if we had to provide a larger amount of input 
+data into these services, or if the underlying process of creating the invoice and checking the DB consisted of a more complex workflow than a few lines of code.
+
+Below is a diagram explaining our event and API call flow across domains and services, depicted here is the "best-case scenario" of a customer choosing to pay with invoice and paying the bill on time:
+
+![event_flow_across_domains](docs/diagrams/event_flow_across_domains.png)
+
+The Camunda processes described in the sections above are what is happening inside the booking and the accounting services respectively.
 
 ## Collaboration
 All team members contributed equally to the group project.
