@@ -14,10 +14,10 @@ Camunda, the engine we use for process orchestration, has different ways of impl
 
 We focus on using the Java delegate expression to implement our business logic. This has multiple reasons: 
 
-- We can exchange business logic quite easily when using java code and docker to deploy software
-- It's easy to work with complex business logic when you have a fully fledged out programming language and an IDE to work with (especially for debugging)
-- Since we use Java Bean as a framework, we need to use a Java delegate expression instead of the Java Class implementation, for the dependency injection to work
-- External and Expression implementations require adding another technology to our tech stack, a new expression language and possibly scripting languages, since we all have experience working with Java and the Bean framework, we feel more comfortable implementing a new project quickly using these technologies
+- We can exchange business logic quite easily when using java code and docker to deploy software.
+- It's easy to work with complex business logic when you have a fully fledged out programming language and an IDE to work with (especially for debugging).
+- Since we use Java Bean as a framework, we need to use a Java delegate expression instead of the Java Class implementation, for the dependency injection to work.
+- External and Expression implementations would require adding another technology to our tech stack, a new expression language and possibly scripting languages. Since we all have experience working with Java and the Bean framework, we feel more comfortable implementing a new project quickly using these technologies.
 
 For more information about the differences between the implementation methods, please refer to the [following guide](https://docs.camunda.io/docs/components/best-practices/development/invoking-services-from-the-process-c7/) published by Camunda themselves.
 
