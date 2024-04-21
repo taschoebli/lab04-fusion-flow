@@ -29,6 +29,7 @@ As resilience pattern, human intervention is used. In the accounting process, we
 Please find all ADRs in the [docs/adr](docs/adr) folder.
 - Choosing between Camunda 7 and 8
 - Distinction between Orchestration and Choreography
+- The general guide on how we implement external business logic in Camunda
 
 
 ## Building the project
