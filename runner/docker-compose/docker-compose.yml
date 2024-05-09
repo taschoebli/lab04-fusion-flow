@@ -94,6 +94,21 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5013,server=y,suspend=n"
 
+  reporting:
+    build:
+      context: ../../kafka/java/reporting
+      dockerfile: Dockerfile
+    networks:
+      - flowing
+    ports:
+      - "8093:8094"
+      - "5014:5014"
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5014,server=y,suspend=n"
+
   docs:
     image: flowingretail/docs
     networks:

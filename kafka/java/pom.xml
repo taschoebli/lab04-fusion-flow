@@ -12,6 +12,7 @@
 		<module>notification</module>
 		<module>qrInvoice</module>
 		<module>accounting</module>
+		<module>reporting</module>
     </modules>
 	<build>
 		<defaultGoal>clean install</defaultGoal>		
