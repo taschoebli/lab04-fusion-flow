@@ -51,7 +51,7 @@
     <bpmn:boundaryEvent id="Event_0vgnf5m" name="15 seconds passed" attachedToRef="Activity_0vc5f0t">
       <bpmn:outgoing>Flow_1955o1m</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1bcepf5">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1955o1m" sourceRef="Event_0vgnf5m" targetRef="Gateway_13ljkch" />
