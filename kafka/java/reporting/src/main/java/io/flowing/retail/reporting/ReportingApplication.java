@@ -1,6 +1,6 @@
 package io.flowing.retail.reporting;
 
-import io.flowing.retail.reporting.repository.BlacklistRepository;
+import io.flowing.retail.reporting.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class ReportingApplication {
 
   @Autowired
-  private BlacklistRepository blacklistRepository;
+  private BookingRepository blacklistRepository;
 
   public static void main(String[] args) throws Exception {
     ConfigurableApplicationContext context = SpringApplication.run(ReportingApplication.class, args);
