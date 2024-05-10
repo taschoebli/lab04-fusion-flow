@@ -1,7 +1,7 @@
 package io.flowing.retail.reporting.application;
 
 import com.google.common.io.Resources;
-import io.flowing.retail.reporting.model.BookingEntry;
+import io.flowing.retail.reporting.Serialization.model.BookingEntry;
 import io.flowing.retail.reporting.repository.BookingRepository;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.nio.ByteBuffer;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class BookingProducer {
 
         // TODO FOR FINAL SUBMISSION WE CAN USE A LARGER NUMBER SUCH AS 1500 or 2000
         for (int id = 1; id <= 1000; id++) { //while (true) {
-
+          /*
             List<BookingEntry> bookingEntries = bookingRepository.findById(id);
             if (bookingEntries != null && !bookingEntries.isEmpty()) {
                 for (BookingEntry bookingEntry : bookingEntries) {
@@ -45,7 +45,14 @@ public class BookingProducer {
                 }
             } else {
                 System.out.println("Keine Buchung gefunden für ID " + id);
-            }
+            }*/
+            String booking = generateRandomBooking().toString();
+            byte[] bytes = new byte[4];
+            // BigEndian
+            ByteBuffer.wrap(bytes).putInt(id);
+
+            ProducerRecord<byte[], String> record = new ProducerRecord<>(TOPIC_NAME, bytes, booking);
+            producer.send(record);
             Thread.sleep(500);
         }
 

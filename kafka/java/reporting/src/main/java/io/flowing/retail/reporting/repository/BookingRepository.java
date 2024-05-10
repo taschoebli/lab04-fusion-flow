@@ -1,6 +1,6 @@
 package io.flowing.retail.reporting.repository;
 
-import io.flowing.retail.reporting.model.BookingEntry;
+import io.flowing.retail.reporting.Serialization.model.BookingEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

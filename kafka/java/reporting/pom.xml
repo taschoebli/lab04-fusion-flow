@@ -12,24 +12,25 @@
         <relativePath/>
     </parent>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.camunda.bpm</groupId>
-                <artifactId>camunda-bom</artifactId>
-                <version>7.20.0</version>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <sourceDir>${project.basedir}/src/main/java/io/flowing/retail/reporting/Serialization/model/</sourceDir>
+    </properties>
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <name>Confluent</name>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
-            <version>7.20.0</version>
-        </dependency>
-
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -37,9 +38,19 @@
         </dependency>
 
         <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-            <version>7.20.0</version>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-maven-plugin</artifactId>
+            <version>1.11.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-streams-avro-serde</artifactId>
+            <version>7.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mitchseymour</groupId>
+            <artifactId>kafka-registryless-avro-serdes</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -56,6 +67,12 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
             <version>3.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+            <version>3.7.0</version>
         </dependency>
 
         <dependency>
@@ -82,6 +99,11 @@
             <artifactId>json</artifactId>
             <version>20210307</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
 
     </dependencies>
     <build>
@@ -107,6 +129,34 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>17</source>
+                            <target>17</target>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.avro</groupId>
+                        <artifactId>avro-maven-plugin</artifactId>
+                        <version>1.8.2</version>
+                        <executions>
+                            <execution>
+                                <id>schemas</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
+                                    <goal>idl-protocol</goal>
+                                </goals>
+                                <configuration>
+                                    <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                                    <outputDirectory>${project.basedir}/src/main/java/io/flowing/retail/reporting/Serialization/model/</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
         </plugins>
     </build>
 </project>
