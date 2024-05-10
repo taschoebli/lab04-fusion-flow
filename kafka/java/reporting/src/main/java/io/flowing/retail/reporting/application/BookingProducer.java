@@ -30,7 +30,7 @@ public class BookingProducer {
             producer = new  KafkaProducer<byte[], String>(properties);
         }
 
-        // generate random booking events
+        // TODO FOR FINAL SUBMISSION WE CAN USE A LARGER NUMBER SUCH AS 1500 or 2000
         for (int id = 1; id <= 1000; id++) { //while (true) {
 
             List<BookingEntry> bookingEntries = bookingRepository.findById(id);
@@ -53,6 +53,7 @@ public class BookingProducer {
     }
     public static JSONObject convertToJSON(BookingEntry booking) {
         JSONObject bookingJson = new JSONObject();
+        //Here we could add the Id of the booking as well, but currently not necessary
         bookingJson.put("locationId", booking.getLocationId());
         bookingJson.put("bookingKey", booking.getBookingKey());
         bookingJson.put("productName", booking.getProductName());
@@ -66,6 +67,7 @@ public class BookingProducer {
     }
 
     public static JSONObject generateRandomBooking() {
+        // TODO THIS CAN BE REMOVED BEFORE FINAL SUBMISSION
         Random rand = new Random();
         int[] numbers = {11,22,33}; // 3 arena ids
         int randomIndex = rand.nextInt(numbers.length);
@@ -73,11 +75,9 @@ public class BookingProducer {
 
         long timestamp = System.currentTimeMillis();
 
-
         // Generate random booking details
         String id = UUID.randomUUID().toString();
         String locationId = "" + randomNumber;
-        // TODO add more fields
 
         // Create JSON object for booking
         JSONObject booking = new JSONObject();

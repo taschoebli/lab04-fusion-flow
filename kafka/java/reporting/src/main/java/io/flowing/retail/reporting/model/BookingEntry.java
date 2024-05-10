@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookingEntry {
+    //Here we could add the Id of the booking as well, but currently not necessary
     private Integer locationId;
     private String bookingKey;
     private String productName;
