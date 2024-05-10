@@ -16,7 +16,7 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_06s5hep" sourceRef="Gateway_0npqd81" targetRef="Activity_1t7nqwz" />
     <bpmn:sequenceFlow id="Flow_0h5j2j6" name="invoice created" sourceRef="Gateway_0npqd81" targetRef="Event_12jkb83" />
-    <bpmn:sequenceFlow id="Flow_1dujtxx" name="No" sourceRef="Gateway_19ezpd0" targetRef="Gateway_1eb5wit">
+    <bpmn:sequenceFlow id="Flow_1dujtxx" name="No" sourceRef="Gateway_19ezpd0" targetRef="Activity_0o74l49">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!paymentTypeIsInvoice}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:parallelGateway id="Gateway_0npqd81">
@@ -34,7 +34,7 @@
     </bpmn:parallelGateway>
     <bpmn:exclusiveGateway id="Gateway_1eb5wit">
       <bpmn:incoming>Flow_006z2yn</bpmn:incoming>
-      <bpmn:incoming>Flow_1dujtxx</bpmn:incoming>
+      <bpmn:incoming>Flow_0cuxgj8</bpmn:incoming>
       <bpmn:outgoing>Flow_0kgg3jz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_006z2yn" sourceRef="Gateway_15ap4ea" targetRef="Gateway_1eb5wit" />
@@ -63,6 +63,27 @@
       <bpmn:incoming>Flow_0813q6w</bpmn:incoming>
       <bpmn:outgoing>Flow_0lw6i30</bpmn:outgoing>
     </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_0cuxgj8" sourceRef="Activity_0o74l49" targetRef="Gateway_1eb5wit" />
+    <bpmn:serviceTask id="Activity_0o74l49" name="Process credit card payment" camunda:asyncBefore="true" camunda:delegateExpression="#{creditCardAdapter}">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>R5/PT1M</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1dujtxx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cuxgj8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Error_CouldNotProcessPayment" name="Error_CouldNotProcessPayment" attachedToRef="Activity_0o74l49">
+      <bpmn:outgoing>Flow_10u0srl</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0o1fobn" errorRef="Error_0bbt9x2" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_10u0srl" sourceRef="Error_CouldNotProcessPayment" targetRef="Activity_0t5utq0" />
+    <bpmn:userTask id="Activity_0t5utq0" name="Contact customer">
+      <bpmn:incoming>Flow_10u0srl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xrtajp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1xv893d" name="Booking resolved manually">
+      <bpmn:incoming>Flow_1xrtajp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1xrtajp" sourceRef="Activity_0t5utq0" targetRef="Event_1xv893d" />
     <bpmn:group id="Group_06qxfpe" categoryValueRef="CategoryValue_173v54d" />
   </bpmn:process>
   <bpmn:category id="Category_1m42udx">
@@ -75,6 +96,7 @@
   <bpmn:message id="Message_0674pkb" name="Message_0674pkb" />
   <bpmn:message id="Message_1hngm9r" name="BankTransferRetrieved" />
   <bpmn:message id="Message_2ki7lgu" name="BankTransferRetrievedNew" />
+  <bpmn:error id="Error_0bbt9x2" name="Error_CouldNotProcessPayment" errorCode="Error_CouldNotProcessPayment" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0q8w3bv">
       <bpmndi:BPMNShape id="Gateway_19ezpd0_di" bpmnElement="Gateway_19ezpd0" isMarkerVisible="true">
@@ -120,10 +142,30 @@
       <bpmndi:BPMNShape id="Activity_09ljd4j_di" bpmnElement="Activity_1a905wi">
         <dc:Bounds x="890" y="317" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Group_06qxfpe_di" bpmnElement="Group_06qxfpe" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
-        <dc:Bounds x="160" y="80" width="1210" height="510" />
+      <bpmndi:BPMNShape id="Activity_1nrwu7k_di" bpmnElement="Activity_0o74l49">
+        <dc:Bounds x="715" y="470" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t5utq0_di" bpmnElement="Activity_0t5utq0">
+        <dc:Bounds x="940" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xv893d_di" bpmnElement="Event_1xv893d">
+        <dc:Bounds x="1152" y="582" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="726" y="87" width="79" height="14" />
+          <dc:Bounds x="1128" y="625" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_06qxfpe_di" bpmnElement="Group_06qxfpe" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <dc:Bounds x="175" y="115" width="1210" height="615" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="741" y="122" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07jay5w_di" bpmnElement="Error_CouldNotProcessPayment">
+        <dc:Bounds x="797" y="532" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="838" y="540" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0qtll96_di" bpmnElement="Flow_0qtll96">
@@ -156,8 +198,7 @@
       <bpmndi:BPMNEdge id="Flow_1dujtxx_di" bpmnElement="Flow_1dujtxx">
         <di:waypoint x="390" y="382" />
         <di:waypoint x="390" y="510" />
-        <di:waypoint x="1170" y="510" />
-        <di:waypoint x="1170" y="325" />
+        <di:waypoint x="715" y="510" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="402" y="428" width="15" height="14" />
         </bpmndi:BPMNLabel>
@@ -187,6 +228,20 @@
         <di:waypoint x="990" y="357" />
         <di:waypoint x="1070" y="357" />
         <di:waypoint x="1070" y="215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cuxgj8_di" bpmnElement="Flow_0cuxgj8">
+        <di:waypoint x="815" y="510" />
+        <di:waypoint x="1170" y="510" />
+        <di:waypoint x="1170" y="325" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10u0srl_di" bpmnElement="Flow_10u0srl">
+        <di:waypoint x="815" y="568" />
+        <di:waypoint x="815" y="600" />
+        <di:waypoint x="940" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xrtajp_di" bpmnElement="Flow_1xrtajp">
+        <di:waypoint x="1040" y="600" />
+        <di:waypoint x="1152" y="600" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
