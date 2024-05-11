@@ -12,6 +12,8 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Printed;
 
+import java.awt.print.Book;
+
 public class FilterProcessesToLocationsTopology {
 
     public static Topology build(){
@@ -19,7 +21,6 @@ public class FilterProcessesToLocationsTopology {
 
         KStream<byte[], BookingEntry> stream =
                 builder.stream("bookings", Consumed.with(Serdes.ByteArray(), new BookingEntrySerdes()));
-        stream.print(Printed.<byte[], BookingEntry>toSysOut().withLabel("BookingEntry-stream"));
 
         //Step one: filter out timestamp
         KStream<byte[], BookingEntry> bookingEntriesWithoutTimestamp =
@@ -56,8 +57,11 @@ public class FilterProcessesToLocationsTopology {
                             return anonymizedBookingEntry;
                         });
 
-        anonymizedBookingEntries.print(Printed.<byte[], AnonymizedBookingEntry>toSysOut().withLabel("Anonymized booking entry stream"));
 
+        anonymizedBookingEntries.foreach(
+                (key, value) -> {
+                    System.out.println("Anonymized Customer: " + value.getAnonymizedCustomer());
+                });
 
 
         return builder.build();

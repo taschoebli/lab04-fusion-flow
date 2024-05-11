@@ -14,8 +14,6 @@ import org.apache.kafka.streams.StreamsConfig;
 
 import java.util.Properties;
 
-import java.io.IOException;
-
 
 @SpringBootApplication
 public class ReportingApplication {
@@ -34,12 +32,13 @@ public class ReportingApplication {
     System.out.println("Number of entries in blacklist found: " + result.size());*/
     System.out.println("Hello World");
     //TODO: implement stream processing
-    try {
-      BookingProducer.produceBooking();
+      BookingProducer producer = new BookingProducer();
+      new Thread(producer).start();
+
       Topology topology = FilterProcessesToLocationsTopology.build();
 
       Properties config = new Properties();
-      config.put(StreamsConfig.APPLICATION_ID_CONFIG, "dev");
+      config.put(StreamsConfig.APPLICATION_ID_CONFIG, "reportingStream");
       config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
 
       KafkaStreams streams = new KafkaStreams(topology, config);
@@ -48,9 +47,6 @@ public class ReportingApplication {
 
       System.out.println("Starting stream processing");
       streams.start();
-    } catch (IOException | InterruptedException e) {
-        throw new RuntimeException(e);
-    }
   }
 
 }

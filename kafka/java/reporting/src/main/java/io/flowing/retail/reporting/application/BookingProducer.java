@@ -14,12 +14,12 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
 
-public class BookingProducer {
+public class BookingProducer implements Runnable{
 
     private static BookingRepository bookingRepository = new BookingRepository();
     private final static String TOPIC_NAME = "bookings";
 
-    public static void produceBooking() throws IOException, InterruptedException {
+    public void produceBooking() throws IOException, InterruptedException {
 
         KafkaProducer<byte[], String> producer;
 
@@ -91,7 +91,26 @@ public class BookingProducer {
 
         booking.put("id", id);
         booking.put("locationId", locationId);
+        booking.put("bookingKey", String.valueOf(timestamp));
+        booking.put("productName", "ProductName");
+        booking.put("customerName", "James T. Kirk");
+        booking.put("bookingDateTime", "2024-10-31T08:00");
+        booking.put("eventDateTime", "2024-10-31T12:00");
+        booking.put("amount", 12);
+        booking.put("paymentStatusIsPaid", true);
+        booking.put("timestamp", timestamp);
 
         return booking;
+    }
+
+    @Override
+    public void run() {
+        try {
+            produceBooking();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
