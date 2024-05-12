@@ -1,18 +1,20 @@
 package io.flowing.retail.reporting.topology;
 
+import io.flowing.retail.reporting.Serialization.avro.AvroSerdes;
 import io.flowing.retail.reporting.Serialization.json.BookingEntrySerdes;
 
 
 import io.flowing.retail.reporting.Serialization.model.AnonymizedBookingEntry;
 import io.flowing.retail.reporting.Serialization.model.BookingEntry;
+import io.flowing.retail.reporting.helpers.Constants;
+import io.flowing.retail.reporting.partitioner.LocationPartitioner;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Printed;
+import org.apache.kafka.streams.kstream.Produced;
 
-import java.awt.print.Book;
 
 public class FilterProcessesToLocationsTopology {
 
@@ -57,11 +59,37 @@ public class FilterProcessesToLocationsTopology {
                             return anonymizedBookingEntry;
                         });
 
+        //step three: routing
+        KStream<byte[], AnonymizedBookingEntry>[] locationBranches = anonymizedBookingEntries.branch(
+                (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 1 || anonymizedBookingEntry.getLocationId() == 11),
+                (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 3 || anonymizedBookingEntry.getLocationId() == 30
+                                               || anonymizedBookingEntry.getLocationId() == 31),
+                (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 2 ));
 
-        anonymizedBookingEntries.foreach(
-                (key, value) -> {
-                    System.out.println("Anonymized Customer: " + value.getAnonymizedCustomer());
-                });
+        for (int i = 0; i < locationBranches.length; i++) {
+            KStream<byte[], AnonymizedBookingEntry> branch = locationBranches[i];
+
+            int i_helper = i;
+            KStream<String, AnonymizedBookingEntry> keyedStream = branch.selectKey((key, value) -> {
+                if (i_helper==0) {
+                    return Constants.LOCATION_ZUERICH;
+                } else if (i_helper == 1) {
+                    return Constants.LOCATION_STGALLEN;
+                } else if (i_helper == 2) {
+                    return Constants.LOCATION_BERN;
+                } else {
+                    return Constants.INVALID_LOCATION;
+                }
+            });
+
+            // Write to the output topic
+            keyedStream.to(
+                    "locationPartitionedBookings",
+                    Produced.with(
+                            Serdes.String(),
+                            AvroSerdes.avroAnonymizedBookingEntry("http://localhost:8081", false),
+                            new LocationPartitioner()));
+        }
 
 
         return builder.build();
