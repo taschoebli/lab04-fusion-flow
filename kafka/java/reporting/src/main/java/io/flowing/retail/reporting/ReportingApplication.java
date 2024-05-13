@@ -1,7 +1,9 @@
 package io.flowing.retail.reporting;
 
 import io.flowing.retail.reporting.topology.FilterProcessesToLocationsTopology;
+import io.flowing.retail.reporting.topology.ReportingService;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.state.HostInfo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -34,6 +36,11 @@ public class ReportingApplication {
 
       System.out.println("Starting stream processing");
       streams.start();
+
+      // start the REST service
+      HostInfo hostInfo = new HostInfo("localhost", 7070);
+      ReportingService service = new ReportingService(hostInfo, streams);
+      service.start();
   }
 
 }

@@ -11,9 +11,7 @@ import io.flowing.retail.reporting.partitioner.LocationPartitioner;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.*;
 
 
 public class FilterProcessesToLocationsTopology {
@@ -66,6 +64,7 @@ public class FilterProcessesToLocationsTopology {
                                                || anonymizedBookingEntry.getLocationId() == 31),
                 (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 2 ));
 
+        // Name the branches
         for (int i = 0; i < locationBranches.length; i++) {
             KStream<byte[], AnonymizedBookingEntry> branch = locationBranches[i];
 
@@ -91,6 +90,14 @@ public class FilterProcessesToLocationsTopology {
                             new LocationPartitioner()));
         }
 
+        // TODO continue here for the aggregation, goal is to have booking count by location
+        //KGroupedStream<String, Long> bookingCountByLocation =
+                //stream.groupBy((key, value) -> value.getLocationId().toString())
+
+        // aggregation: booking count by AOI (Area of Interest)
+        KTable<String, Long> bookingCountByAOI = locationBranches[0]
+                .groupBy((key, value) -> value.getAnonymizedCustomer().toString())
+                .count();
 
         return builder.build();
     }
