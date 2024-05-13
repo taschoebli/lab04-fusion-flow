@@ -1,0 +1,10 @@
+camunda.bpm:
+  admin-user:
+    id: flowingRetail
+    password: flowingRetail
+    firstName: flowingRetail
+  filter:
+    create: All tasks
+  generic-properties:
+    properties:
+      historyTimeToLive: P1D

@@ -1,6 +1,6 @@
-package io.flowing.retail.reporting.repository;
+package io.flowing.retail.bookingProducer.repository;
 
-import io.flowing.retail.reporting.Serialization.model.BookingEntry;
+import io.flowing.retail.bookingProducer.model.BookingEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,7 +35,6 @@ public class BookingRepository {
         return jdbcTemplate.query(sql, new Object[]{id}, BOOKING_ROW_MAPPER);
     }
 
-    // TODO THIS CAN BE REMOVED BEFORE FINAL SUBMISSION
     public List<BookingEntry> findAll() {
         //Here we could add the Id of the booking as well, but currently not necessary
         String sql = "SELECT `locationId`, `bookingKey`, `productName`, `customerName`, `bookingDateTime`, `eventDateTime`, `amount`, `paymentStatusIsPaid`, `timestamp` FROM `bookingsPerpetual` WHERE 1";

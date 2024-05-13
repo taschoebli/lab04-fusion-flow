@@ -13,6 +13,7 @@
 		<module>qrInvoice</module>
 		<module>accounting</module>
 		<module>reporting</module>
+		<module>bookingProducer</module>
     </modules>
 	<build>
 		<defaultGoal>clean install</defaultGoal>		
