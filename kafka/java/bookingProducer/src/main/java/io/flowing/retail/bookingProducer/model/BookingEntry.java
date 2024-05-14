@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 @Setter
 public class BookingEntry {
     //Here we could add the Id of the booking as well, but currently not necessary
+    @SerializedName("Id")
+    Integer bookingId;
+
     @SerializedName("locationId")
     Integer locationId;
 

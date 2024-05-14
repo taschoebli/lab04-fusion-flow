@@ -3,6 +3,11 @@
   "type": "record",
   "fields": [
     {
+      "name": "id",
+      "type": ["null", "int"],
+      "default": null
+    },
+    {
       "name": "locationId",
       "type": ["null", "int"],
       "default": null

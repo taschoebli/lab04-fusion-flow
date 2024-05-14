@@ -27,6 +27,7 @@ public class FilterProcessesToLocationsTopology {
                 stream.mapValues(
                         (BookingEntry) -> {
                             BookingEntry bookingEntryWithoutTimestamp = new BookingEntry();
+                            bookingEntryWithoutTimestamp.setId(BookingEntry.getId());
                             bookingEntryWithoutTimestamp.setLocationId(BookingEntry.getLocationId());
                             bookingEntryWithoutTimestamp.setBookingKey(BookingEntry.getBookingKey());
                             bookingEntryWithoutTimestamp.setProductName(BookingEntry.getProductName());
@@ -44,6 +45,7 @@ public class FilterProcessesToLocationsTopology {
                         (BookingEntry) -> {
                             AnonymizedBookingEntry anonymizedBookingEntry =
                                     AnonymizedBookingEntry.newBuilder()
+                                            .setId(BookingEntry.getId())
                                             .setLocationId(BookingEntry.getLocationId())
                                             .setBookingKey(BookingEntry.getBookingKey())
                                             .setProductName(BookingEntry.getProductName())
@@ -91,6 +93,7 @@ public class FilterProcessesToLocationsTopology {
         }
 
         // Stateful processing -> Bookings per Location Aggregation
+        // TODO: check: isnt it said in the slides that aggregation based on properties isnt stateful?
         KStream<String, AnonymizedBookingEntry> allKeyedStream = anonymizedBookingEntries.selectKey((key, value) -> {
             if (value.getLocationId() == 1 || value.getLocationId() == 11) {
                 return Constants.LOCATION_ZUERICH;

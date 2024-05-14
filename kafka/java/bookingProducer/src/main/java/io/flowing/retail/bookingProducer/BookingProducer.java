@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.awt.print.Book;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -38,10 +39,10 @@ public class BookingProducer {
         System.out.println("Hello World");
 
         //This is the method that produces the bookings for a long time
-        produceBooking();
+        produceBooking(result);
     }
 
-    public void produceBooking() throws IOException, InterruptedException {
+    public void produceBooking(List<BookingEntry> entries) throws IOException, InterruptedException {
 
         KafkaProducer<byte[], String> producer;
 
@@ -52,22 +53,17 @@ public class BookingProducer {
             producer = new KafkaProducer<byte[], String>(properties);
         }
 
-        for (int id = 1; id <= 1000; id++) {
-            List<BookingEntry> bookingEntries = bookingRepository.findById(id);
-            if (bookingEntries != null && !bookingEntries.isEmpty()) {
-                for (BookingEntry bookingEntry : bookingEntries) {
-                    JSONObject bookingJson = Converters.toJSON(bookingEntry);
-                    byte[] key = null;
-                    String value = bookingJson.toString();
-                    System.out.println("New Booking - " + value);
-                    ProducerRecord<byte[], String> record = new ProducerRecord<>(TOPIC_NAME, key, value);
-                    producer.send(record);
+        for (int id = 1; id <= entries.size(); id++) {
+            for (BookingEntry bookingEntry : entries) {
+                JSONObject bookingJson = Converters.toJSON(bookingEntry);
+                byte[] key = null;
+                String value = bookingJson.toString();
+                System.out.println("New Booking - " + value);
+                ProducerRecord<byte[], String> record = new ProducerRecord<>(TOPIC_NAME, key, value);
+                producer.send(record);
 
-                    Thread.sleep(1500);
+                Thread.sleep(1500);
                 }
-            } else {
-                System.out.println("Keine Buchung gefunden für ID " + id);
-            }
         }
     }
 }

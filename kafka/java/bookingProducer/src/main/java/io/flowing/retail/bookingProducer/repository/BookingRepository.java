@@ -16,7 +16,7 @@ public class BookingRepository {
 
     private static final RowMapper<BookingEntry> BOOKING_ROW_MAPPER = (rs, rowNum) -> {
         BookingEntry entry = new BookingEntry();
-        //Here we could add the Id of the booking as well, but currently not necessary
+        entry.setBookingId(rs.getInt("id"));
         entry.setLocationId(rs.getInt("locationId"));
         entry.setBookingKey(rs.getString("bookingKey"));
         entry.setProductName(rs.getString("productName"));
@@ -31,13 +31,13 @@ public class BookingRepository {
 
     public List<BookingEntry> findById(Integer id) {
         //Here we could add the Id of the booking as well, but currently not necessary
-        String sql = "SELECT `locationId`, `bookingKey`, `productName`, `customerName`, `bookingDateTime`, `eventDateTime`, `amount`, `paymentStatusIsPaid`, `timestamp` FROM `bookingsPerpetual` WHERE `id` = ?";
+        String sql = "SELECT `id`, `bookingKey`, `productName`, `customerName`, `bookingDateTime`, `eventDateTime`, `amount`, `paymentStatusIsPaid`, `timestamp` FROM `bookingsPerpetual` WHERE `id` = ?";
         return jdbcTemplate.query(sql, new Object[]{id}, BOOKING_ROW_MAPPER);
     }
 
     public List<BookingEntry> findAll() {
         //Here we could add the Id of the booking as well, but currently not necessary
-        String sql = "SELECT `locationId`, `bookingKey`, `productName`, `customerName`, `bookingDateTime`, `eventDateTime`, `amount`, `paymentStatusIsPaid`, `timestamp` FROM `bookingsPerpetual` WHERE 1";
+        String sql = "SELECT `id`, `locationId`, `bookingKey`, `productName`, `customerName`, `bookingDateTime`, `eventDateTime`, `amount`, `paymentStatusIsPaid`, `timestamp` FROM `bookingsPerpetual` WHERE 1";
         return jdbcTemplate.query(sql, BOOKING_ROW_MAPPER);
     }
 }
