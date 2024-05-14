@@ -39,7 +39,7 @@ public class ReportingService {
 
         ReadOnlyKeyValueStore<String, Long> store = streams.store(
                 StoreQueryParameters.fromNameAndType(
-                        "bookings-zuerich",
+                        "bookingCount",
                         QueryableStoreTypes.keyValueStore()));
 
         KeyValueIterator<String, Long> range = store.all();

@@ -90,14 +90,20 @@ public class FilterProcessesToLocationsTopology {
                             new LocationPartitioner()));
         }
 
-        // TODO continue here for the aggregation, goal is to have booking count by location
-        //KGroupedStream<String, Long> bookingCountByLocation =
-                //stream.groupBy((key, value) -> value.getLocationId().toString())
-
-        // aggregation: booking count by AOI (Area of Interest)
-        KTable<String, Long> bookingCountByAOI = locationBranches[0]
-                .groupBy((key, value) -> value.getAnonymizedCustomer().toString())
-                .count();
+        // Stateful processing -> Bookings per Location Aggregation
+        KStream<String, AnonymizedBookingEntry> allKeyedStream = anonymizedBookingEntries.selectKey((key, value) -> {
+            if (value.getLocationId() == 1 || value.getLocationId() == 11) {
+                return Constants.LOCATION_ZUERICH;
+            } else if (value.getLocationId() == 3 || value.getLocationId() == 30 || value.getLocationId() == 31) {
+                return Constants.LOCATION_STGALLEN;
+            } else if (value.getLocationId() == 2) {
+                return Constants.LOCATION_BERN;
+            } else {
+                return Constants.INVALID_LOCATION;
+            }
+        });
+        KGroupedStream<String, AnonymizedBookingEntry> groupedByLocation = allKeyedStream.groupByKey(Grouped.with(Serdes.String(), AvroSerdes.avroAnonymizedBookingEntry("http://localhost:8081", false)));
+        KTable<String, Long> bookingCountByLocation = groupedByLocation.count(Materialized.as("bookingCount"));
 
         return builder.build();
     }
