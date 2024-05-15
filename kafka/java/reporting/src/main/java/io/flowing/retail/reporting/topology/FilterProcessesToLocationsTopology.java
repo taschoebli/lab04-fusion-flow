@@ -93,8 +93,7 @@ public class FilterProcessesToLocationsTopology {
         }
 
         // Stateful processing -> Bookings per Location Aggregation
-        // TODO: check: isnt it said in the slides that aggregation based on properties isnt stateful?
-        KStream<String, AnonymizedBookingEntry> allKeyedStream = anonymizedBookingEntries.selectKey((key, value) -> {
+            KStream<String, AnonymizedBookingEntry> allKeyedStream = anonymizedBookingEntries.selectKey((key, value) -> {
             if (value.getLocationId() == 1 || value.getLocationId() == 11) {
                 return Constants.LOCATION_ZUERICH;
             } else if (value.getLocationId() == 3 || value.getLocationId() == 30 || value.getLocationId() == 31) {
