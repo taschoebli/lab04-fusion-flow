@@ -11,5 +11,5 @@ public class Constants {
 
     public static String INVALID_LOCATION = "invalid_booking_location";
 
-    public static Duration WINDOW_SIZE = Duration.ofDays(1);
+    public static Duration WINDOW_SIZE = Duration.ofSeconds(3);
 }

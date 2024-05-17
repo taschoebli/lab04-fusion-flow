@@ -1,0 +1,56 @@
+{
+  "name": "AnonymizedBookingEntry",
+  "type": "record",
+  "fields": [
+    {
+      "name": "id",
+      "type": ["null", "int"],
+      "default": null
+    },{
+      "name": "locationId",
+      "type": ["null", "int"],
+      "default": null
+    },
+    {
+      "name": "bookingKey",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "productName",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "anonymizedCustomer",
+      "type": ["null", "int"],
+      "default": null
+    },
+    {
+      "name": "bookingDateTime",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "eventDateTime",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "amount",
+      "type": ["null", "int"],
+      "default": null
+    },
+    {
+      "name": "paymentStatusIsPaid",
+      "type": ["null", "boolean"],
+      "default": null
+    },
+    {
+      "name": "timestamp",
+      "type": ["null", "string"],
+      "default": null
+    }
+  ],
+  "doc": "AVRO schema for Booking data records."
+}

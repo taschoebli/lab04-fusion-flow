@@ -39,7 +39,7 @@
 <div class="container">
     <div class="row">
 
-        <h1 class="text-center">Reporting Monitor</h1>
+        <h1 class="text-center">Window Monitor</h1>
     </div>
 </div>
 
@@ -48,7 +48,7 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="nav nav-tabs">
-                <li role="presentation" class="nav-item"><a href="#locationMonitorDiv" class="nav-link" data-toggle="tab">Location
+                <li role="presentation" class="nav-item"><a href="#windowMonitorDiv" class="nav-link" data-toggle="tab">Window
                     Monitor</a></li>
             </ul>
         </div>
@@ -60,13 +60,13 @@
         <div class="col-md-12">
             <div class="tab-content">
 
-                <div class="tab-pane" role="tabpanel" id="locationMonitorDiv">
+                <div class="tab-pane" role="tabpanel" id="windowMonitorDiv">
 
-                    <table id="locationMonitorTable" class="table-container">
+                    <table id="windowMonitorTable" class="table-container">
                         <thead>
                         <tr>
-                            <th>Area of Interest</th>
-                            <th>Booking Count</th>
+                            <th>EventDateTime</th>
+                            <th>Count</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -111,7 +111,7 @@
                         let cell1 = $('<td>').text(key);
                         let cell2 = $('<td>');
 
-                        if (tableId === 'locationMonitorTable') {
+                        if (tableId === 'windowMonitorTable
                             cell2.text(value);
                         } else {
                             cell2.append(jsonToUl(value));
@@ -127,7 +127,7 @@
         }
 
         function refreshData() {
-            fetchData('/locationMonitor', 'locationMonitorTable');
+            fetchData('/windowMonitor', 'windowMonitorTable');
         }
 
         setInterval(refreshData, 2000); // Refresh data every 2 seconds

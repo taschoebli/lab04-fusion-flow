@@ -1,9 +1,8 @@
-package io.flowing.retail.reporting.Serialization.model;
-
-import lombok.Getter;
-import lombok.Setter;
+package io.flowing.retail.windowing.Serialization.model;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

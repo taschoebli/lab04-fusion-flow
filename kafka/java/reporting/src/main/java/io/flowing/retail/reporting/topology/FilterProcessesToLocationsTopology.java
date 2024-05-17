@@ -17,7 +17,7 @@ import org.apache.kafka.streams.kstream.*;
 
 public class FilterProcessesToLocationsTopology {
 
-    public static Topology build(){
+    public static Topology build() {
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<byte[], BookingEntry> stream =
@@ -64,8 +64,8 @@ public class FilterProcessesToLocationsTopology {
         KStream<byte[], AnonymizedBookingEntry>[] locationBranches = anonymizedBookingEntries.branch(
                 (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 1 || anonymizedBookingEntry.getLocationId() == 11),
                 (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 3 || anonymizedBookingEntry.getLocationId() == 30
-                                               || anonymizedBookingEntry.getLocationId() == 31),
-                (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 2 ));
+                        || anonymizedBookingEntry.getLocationId() == 31),
+                (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 2));
 
         // Name the branches
         for (int i = 0; i < locationBranches.length; i++) {
@@ -73,7 +73,7 @@ public class FilterProcessesToLocationsTopology {
 
             int i_helper = i;
             KStream<String, AnonymizedBookingEntry> keyedStream = branch.selectKey((key, value) -> {
-                if (i_helper==0) {
+                if (i_helper == 0) {
                     return Constants.LOCATION_ZUERICH;
                 } else if (i_helper == 1) {
                     return Constants.LOCATION_STGALLEN;
@@ -94,7 +94,7 @@ public class FilterProcessesToLocationsTopology {
         }
 
         // Stateful processing -> Bookings per Location Aggregation
-            KStream<String, AnonymizedBookingEntry> allKeyedStream = anonymizedBookingEntries.selectKey((key, value) -> {
+        KStream<String, AnonymizedBookingEntry> allKeyedStream = anonymizedBookingEntries.selectKey((key, value) -> {
             if (value.getLocationId() == 1 || value.getLocationId() == 11) {
                 return Constants.LOCATION_ZUERICH;
             } else if (value.getLocationId() == 3 || value.getLocationId() == 30 || value.getLocationId() == 31) {
@@ -107,23 +107,6 @@ public class FilterProcessesToLocationsTopology {
         });
         KGroupedStream<String, AnonymizedBookingEntry> groupedByLocation = allKeyedStream.groupByKey(Grouped.with(Serdes.String(), AvroSerdes.avroAnonymizedBookingEntry("http://localhost:8081", false)));
         KTable<String, Long> bookingCountByLocation = groupedByLocation.count(Materialized.as("bookingCount"));
-
-
-        //Window Aggregation
-        /*Consumed<byte[], BookingEntry> bookingEntryConsumerOptions = Consumed.with(Serdes.ByteArray(), new BookingEntrySerdes())
-                .withTimestampExtractor(new EventDateTimeExtractor());
-
-        KStream<byte[], BookingEntry> stream1 =
-                builder.stream("bookings_simple", bookingEntryConsumerOptions);
-
-        TimeWindows tumblingWindow = TimeWindows.ofSizeWithNoGrace(Constants.WINDOW_SIZE);
-
-        KTable<Windowed<byte[]>, Long> eventDateTimeCounts = stream1
-                .groupByKey()
-                .windowedBy(tumblingWindow)
-                .count(Materialized.as("eventDateTimeCounts"))
-                .suppress(Suppressed.untilWindowCloses(Suppressed.BufferConfig.unbounded().shutDownWhenFull()));
-    */
 
         return builder.build();
     }

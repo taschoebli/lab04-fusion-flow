@@ -1,4 +1,4 @@
-package io.flowing.retail.reporting.topology;
+package io.flowing.retail.windowing.topology;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
@@ -32,25 +32,25 @@ public class ReportingService {
         }).start(hostInfo.port());
 
         // Define a route for querying in the key-value store
-        app.get("/locationMonitor", this::getLocationCount);
+        app.get("/windowMonitor", this::getEventDateTimeCount);
     }
-
-    void getLocationCount(Context ctx) {
+    void getEventDateTimeCount(Context ctx) {
         Map<String, Long> monitor = new HashMap<>();
 
-        ReadOnlyKeyValueStore<String, Long> store = streams.store(
+        ReadOnlyWindowStore<byte[], Long> store = streams.store(
                 StoreQueryParameters.fromNameAndType(
-                        "bookingCount",
-                        QueryableStoreTypes.keyValueStore()));
+                        "eventDateTimeCounts",
+                        QueryableStoreTypes.windowStore()));
 
-        KeyValueIterator<String, Long> range = store.all();
-        while (range.hasNext()) {
-            KeyValue<String, Long> next = range.next();
-            String aoi = next.key;
-            long count = next.value;
-            monitor.put(aoi, count);
+        try (KeyValueIterator<Windowed<byte[]>, Long> range = store.all()) {
+            while (range.hasNext()) {
+                KeyValue<Windowed<byte[]>, Long> next = range.next();
+                String aoi = new String(next.key.key());
+                long count = next.value;
+                monitor.put(aoi, count);
+            }
+            range.close();
+            ctx.json(monitor);
         }
-        range.close();
-        ctx.json(monitor);
     }
 }
