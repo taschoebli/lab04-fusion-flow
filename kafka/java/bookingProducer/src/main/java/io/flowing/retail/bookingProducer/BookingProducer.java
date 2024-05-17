@@ -44,13 +44,13 @@ public class BookingProducer {
 
     public void produceBooking(List<BookingEntry> entries) throws IOException, InterruptedException {
 
-        KafkaProducer<byte[], String> producer;
+        KafkaProducer<Integer, String> producer;
 
         try (InputStream props = Resources.getResource("application.properties").openStream()) {
             Properties properties = new Properties();
             properties.load(props);
             // Create Kafka booking
-            producer = new KafkaProducer<byte[], String>(properties);
+            producer = new KafkaProducer<Integer, String>(properties);
         }
 
         for (int id = 1; id <= entries.size(); id++) {
@@ -59,7 +59,7 @@ public class BookingProducer {
                 byte[] key = null;
                 String value = bookingJson.toString();
                 System.out.println("New Booking - " + value);
-                ProducerRecord<byte[], String> record = new ProducerRecord<>(TOPIC_NAME, key, value);
+                ProducerRecord<Integer, String> record = new ProducerRecord<>(TOPIC_NAME, bookingEntry.getBookingId(), value);
                 producer.send(record);
 
                 Thread.sleep(1500);

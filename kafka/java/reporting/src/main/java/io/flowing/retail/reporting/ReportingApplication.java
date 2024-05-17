@@ -1,5 +1,6 @@
 package io.flowing.retail.reporting;
 
+import io.flowing.retail.reporting.topology.CombineStreamsAndPrepareForReportingTopology;
 import io.flowing.retail.reporting.topology.FilterProcessesToLocationsTopology;
 import io.flowing.retail.reporting.topology.ReportingService;
 import org.apache.kafka.streams.Topology;
@@ -24,22 +25,22 @@ public class ReportingApplication {
   }
 
   public void runApp() {
-      Topology topology = FilterProcessesToLocationsTopology.build();
+      Topology topology = CombineStreamsAndPrepareForReportingTopology.build();
 
       Properties config = new Properties();
       config.put(StreamsConfig.APPLICATION_ID_CONFIG, "reportingStream");
       config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
 
-      KafkaStreams streams = new KafkaStreams(topology, config);
+      KafkaStreams stream = new KafkaStreams(topology, config);
 
-      Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+      Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
 
       System.out.println("Starting stream processing");
-      streams.start();
+      stream.start();
 
       // start the REST service
       HostInfo hostInfo = new HostInfo("localhost", 7070);
-      ReportingService service = new ReportingService(hostInfo, streams);
+      ReportingService service = new ReportingService(hostInfo, stream);
       service.start();
   }
 

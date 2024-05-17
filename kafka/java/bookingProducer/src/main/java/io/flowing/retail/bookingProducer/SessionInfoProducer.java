@@ -63,7 +63,7 @@ public class SessionInfoProducer {
             System.out.println("New actual Session data - " + value);
             ProducerRecord<byte[], String> record = new ProducerRecord<>(TOPIC_NAME, key, value);
             producer.send(record);
-            Thread.sleep(60000);
+            Thread.sleep(30000);
 
         }
     }

@@ -8,4 +8,6 @@ public class Constants {
     public static String LOCATION_STGALLEN = "bookings-stgallen";
 
     public static String INVALID_LOCATION = "invalid_booking_location";
+
+    public static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 }
