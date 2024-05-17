@@ -52,6 +52,8 @@
                 <li class="nav-item">
                     <a href="#sessionMonitorDiv" class="nav-link" data-bs-toggle="tab">Session Monitor</a>
                 </li>
+                <li role="presentation" class="nav-item"><a href="#windowMonitorDiv" class="nav-link" data-toggle="tab">Window
+                    Monitor</a></li>
             </ul>
         </div>
     </div>
@@ -87,6 +89,29 @@
 </div>
 </body>
 </html>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab-content">
+
+                <div class="tab-pane" role="tabpanel" id="windowMonitorDiv">
+
+                    <table id="windowMonitorTable" class="table-container">
+                        <thead>
+                        <tr>
+                            <th>EventDateTime</th>
+                            <th>Count</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -138,6 +163,7 @@
 
         function refreshData() {
             fetchData('/locationMonitor', 'locationMonitorTable');
+            fetchData('/windowMonitor', 'windowMonitorTable');
             fetchData('/sessionMonitor', 'sessionMonitorTable');
         }
 
@@ -150,3 +176,4 @@
 </script>
 </body>
 </html>
+

@@ -7,6 +7,7 @@ import io.flowing.retail.reporting.Serialization.json.BookingEntrySerdes;
 import io.flowing.retail.reporting.Serialization.model.AnonymizedBookingEntry;
 import io.flowing.retail.reporting.Serialization.model.BookingEntry;
 import io.flowing.retail.reporting.helpers.Constants;
+import io.flowing.retail.reporting.helpers.EventDateTimeExtractor;
 import io.flowing.retail.reporting.partitioner.LocationPartitioner;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -106,6 +107,23 @@ public class FilterProcessesToLocationsTopology {
         });
         KGroupedStream<String, AnonymizedBookingEntry> groupedByLocation = allKeyedStream.groupByKey(Grouped.with(Serdes.String(), AvroSerdes.avroAnonymizedBookingEntry("http://localhost:8081", false)));
         KTable<String, Long> bookingCountByLocation = groupedByLocation.count(Materialized.as("bookingCount"));
+
+
+        //Window Aggregation
+        /*Consumed<byte[], BookingEntry> bookingEntryConsumerOptions = Consumed.with(Serdes.ByteArray(), new BookingEntrySerdes())
+                .withTimestampExtractor(new EventDateTimeExtractor());
+
+        KStream<byte[], BookingEntry> stream1 =
+                builder.stream("bookings_simple", bookingEntryConsumerOptions);
+
+        TimeWindows tumblingWindow = TimeWindows.ofSizeWithNoGrace(Constants.WINDOW_SIZE);
+
+        KTable<Windowed<byte[]>, Long> eventDateTimeCounts = stream1
+                .groupByKey()
+                .windowedBy(tumblingWindow)
+                .count(Materialized.as("eventDateTimeCounts"))
+                .suppress(Suppressed.untilWindowCloses(Suppressed.BufferConfig.unbounded().shutDownWhenFull()));
+    */
 
         return builder.build();
     }

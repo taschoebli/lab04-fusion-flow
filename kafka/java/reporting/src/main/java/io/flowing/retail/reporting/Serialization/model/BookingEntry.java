@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Getter
 @Setter
-public class BookingEntry {
+public class BookingEntry implements EventDateTime {
 
     @SerializedName("id")
     Integer id;
@@ -38,6 +38,10 @@ public class BookingEntry {
 
     @SerializedName("timestamp")
     String timestamp;
+
+    public String getEventDateTimeCustom() {
+        return this.timestamp;
+    }
 
 }
 
