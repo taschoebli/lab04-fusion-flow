@@ -113,28 +113,34 @@
 
                         if (tableId === 'windowMonitorTable
                             cell2.text(value);
-                        } else {
-                            cell2.append(jsonToUl(value));
-                        }
+                    }
+                else
+                    {
+                        cell2.append(jsonToUl(value));
+                    }
 
-                        row.append(cell1).append(cell2);
-                        tableBody.append(row);
-                    });
-                })
-                .fail(function (error) {
-                    console.error('Error fetching data:', error);
+                    row.append(cell1).append(cell2);
+                    tableBody.append(row);
                 });
         }
 
-        function refreshData() {
-            fetchData('/windowMonitor', 'windowMonitorTable');
-        }
+    )
+    .
+        fail(function (error) {
+            console.error('Error fetching data:', error);
+        });
+    }
 
-        setInterval(refreshData, 2000); // Refresh data every 2 seconds
-        refreshData(); // Initial data load
+    function refreshData() {
+        fetchData('/windowMonitor', 'windowMonitorTable');
+    }
 
-        $('.nav-tabs a:first').click();
-    });
+    setInterval(refreshData, 2000); // Refresh data every 2 seconds
+    refreshData(); // Initial data load
+
+    $('.nav-tabs a:first').click();
+    })
+
 
 </script>
 </body>

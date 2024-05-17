@@ -18,10 +18,12 @@ public class ReportingService {
 
     private final HostInfo hostInfo;
     private final KafkaStreams streams;
+    private final KafkaStreams streams2;
 
-    public ReportingService(HostInfo hostInfo, KafkaStreams streams) {
+    public ReportingService(HostInfo hostInfo, KafkaStreams streams, KafkaStreams streams2) {
         this.hostInfo = hostInfo;
         this.streams = streams;
+        this.streams2 = streams2;
     }
 
     // Start the Javalin web server and configure routes
@@ -34,14 +36,14 @@ public class ReportingService {
 
         // Define a route for querying in the key-value store
         app.get("/locationMonitor", this::getLocationCount);
-        app.get("/windowMonitor", this::getEventDateTimeCount);
+        //app.get("/windowMonitor", this::getEventDateTimeCount);
 
         app.get("/sessionMonitor", this::getSessionStats);
 
     }
 
     void getLocationCount(Context ctx) {
-        /*Map<String, Long> monitor = new HashMap<>();
+        Map<String, Long> monitor = new HashMap<>();
 
         ReadOnlyKeyValueStore<String, Long> store = streams.store(
                 StoreQueryParameters.fromNameAndType(
@@ -56,13 +58,13 @@ public class ReportingService {
             monitor.put(aoi, count);
         }
         range.close();
-        ctx.json(monitor);*/
+        ctx.json(monitor);
     }
 
     void getSessionStats(Context ctx){
         Map<String, SessionStats> monitor = new HashMap<>();
 
-        ReadOnlyKeyValueStore<String, SessionStats> store = streams.store(
+        ReadOnlyKeyValueStore<String, SessionStats> store = streams2.store(
                 StoreQueryParameters.fromNameAndType(
                         "sessionStats",
                         QueryableStoreTypes.keyValueStore()));
@@ -78,7 +80,7 @@ public class ReportingService {
         ctx.json(monitor);
     }
 
-    void getEventDateTimeCount(Context ctx) {
+    /*void getEventDateTimeCount(Context ctx) {
         Map<String, Long> monitor = new HashMap<>();
 
         ReadOnlyWindowStore<byte[], Long> store = streams.store(
@@ -96,5 +98,5 @@ public class ReportingService {
             range.close();
             ctx.json(monitor);
         }
-    }
+    }*/
 }
