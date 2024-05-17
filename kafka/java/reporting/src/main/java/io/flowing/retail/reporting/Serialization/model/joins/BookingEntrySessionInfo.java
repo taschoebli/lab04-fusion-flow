@@ -1,16 +1,16 @@
 package io.flowing.retail.reporting.Serialization.model.joins;
 
 import com.google.gson.annotations.SerializedName;
-import io.flowing.retail.reporting.Serialization.model.AnonymizedBookingEntry;
+import io.flowing.retail.reporting.Serialization.model.NonAvroAnonymizedBookingEntry;
 import io.flowing.retail.reporting.Serialization.model.SessionInfo;
 
 public class BookingEntrySessionInfo {
     @SerializedName("SessionInfo")
     private SessionInfo sessionInfo;
     @SerializedName("AnonymizedBookingEntry")
-    private AnonymizedBookingEntry bookingEntry;
+    private NonAvroAnonymizedBookingEntry bookingEntry;
 
-    public BookingEntrySessionInfo(SessionInfo sessionInfo, AnonymizedBookingEntry bookingEntry) {
+    public BookingEntrySessionInfo(SessionInfo sessionInfo, NonAvroAnonymizedBookingEntry bookingEntry) {
         this.sessionInfo = sessionInfo;
         this.bookingEntry = bookingEntry;
     }
@@ -23,11 +23,11 @@ public class BookingEntrySessionInfo {
         this.sessionInfo = sessionInfo;
     }
 
-    public AnonymizedBookingEntry getBookingEntry() {
+    public NonAvroAnonymizedBookingEntry getBookingEntry() {
         return bookingEntry;
     }
 
-    public void setBookingEntry(AnonymizedBookingEntry bookingEntry) {
+    public void setBookingEntry(NonAvroAnonymizedBookingEntry bookingEntry) {
         this.bookingEntry = bookingEntry;
     }
 }

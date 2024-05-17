@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 @Setter
 public class SessionInfo {
 
-    @SerializedName("id")
+    @SerializedName("bookingId")
     Integer bookingId;
 
     @SerializedName("actualStartTime")

@@ -1,5 +1,6 @@
 package io.flowing.retail.reporting.topology;
 
+import io.flowing.retail.reporting.Serialization.model.aggregations.SessionStats;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
@@ -33,10 +34,14 @@ public class ReportingService {
 
         // Define a route for querying in the key-value store
         app.get("/locationMonitor", this::getLocationCount);
+        app.get("/windowMonitor", this::getEventDateTimeCount);
+
+        app.get("/sessionMonitor", this::getSessionStats);
+
     }
 
     void getLocationCount(Context ctx) {
-        Map<String, Long> monitor = new HashMap<>();
+        /*Map<String, Long> monitor = new HashMap<>();
 
         ReadOnlyKeyValueStore<String, Long> store = streams.store(
                 StoreQueryParameters.fromNameAndType(
@@ -51,6 +56,45 @@ public class ReportingService {
             monitor.put(aoi, count);
         }
         range.close();
+        ctx.json(monitor);*/
+    }
+
+    void getSessionStats(Context ctx){
+        Map<String, SessionStats> monitor = new HashMap<>();
+
+        ReadOnlyKeyValueStore<String, SessionStats> store = streams.store(
+                StoreQueryParameters.fromNameAndType(
+                        "sessionStats",
+                        QueryableStoreTypes.keyValueStore()));
+
+        KeyValueIterator<String, SessionStats> range = store.all();
+        while (range.hasNext()) {
+            KeyValue<String, SessionStats> next = range.next();
+            String location = next.key;
+            SessionStats stats = next.value;
+            monitor.put(location, stats);
+        }
+        range.close();
         ctx.json(monitor);
+    }
+
+    void getEventDateTimeCount(Context ctx) {
+        Map<String, Long> monitor = new HashMap<>();
+
+        ReadOnlyWindowStore<byte[], Long> store = streams.store(
+                StoreQueryParameters.fromNameAndType(
+                        "eventDateTimeCounts",
+                        QueryableStoreTypes.windowStore()));
+
+        try (KeyValueIterator<Windowed<byte[]>, Long> range = store.all()) {
+            while (range.hasNext()) {
+                KeyValue<Windowed<byte[]>, Long> next = range.next();
+                String aoi = new String(next.key.key());
+                long count = next.value;
+                monitor.put(aoi, count);
+            }
+            range.close();
+            ctx.json(monitor);
+        }
     }
 }

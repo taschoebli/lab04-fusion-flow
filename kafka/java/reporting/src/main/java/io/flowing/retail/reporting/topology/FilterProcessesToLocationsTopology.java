@@ -20,11 +20,11 @@ public class FilterProcessesToLocationsTopology {
     public static Topology build() {
         StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<byte[], BookingEntry> stream =
-                builder.stream("bookings", Consumed.with(Serdes.ByteArray(), new BookingEntrySerdes()));
+        KStream<Integer, BookingEntry> stream =
+                builder.stream("bookings", Consumed.with(Serdes.Integer(), new BookingEntrySerdes()));
 
         //Step one: filter out timestamp
-        KStream<byte[], BookingEntry> bookingEntriesWithoutTimestamp =
+        KStream<Integer, BookingEntry> bookingEntriesWithoutTimestamp =
                 stream.mapValues(
                         (BookingEntry) -> {
                             BookingEntry bookingEntryWithoutTimestamp = new BookingEntry();
@@ -41,7 +41,7 @@ public class FilterProcessesToLocationsTopology {
                         });
 
         //Step two: anonymize the customer
-        KStream<byte[], AnonymizedBookingEntry> anonymizedBookingEntries =
+        KStream<Integer, AnonymizedBookingEntry> anonymizedBookingEntries =
                 bookingEntriesWithoutTimestamp.mapValues(
                         (BookingEntry) -> {
                             AnonymizedBookingEntry anonymizedBookingEntry =
@@ -61,7 +61,7 @@ public class FilterProcessesToLocationsTopology {
                         });
 
         //step three: routing
-        KStream<byte[], AnonymizedBookingEntry>[] locationBranches = anonymizedBookingEntries.branch(
+        KStream<Integer, AnonymizedBookingEntry>[] locationBranches = anonymizedBookingEntries.branch(
                 (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 1 || anonymizedBookingEntry.getLocationId() == 11),
                 (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 3 || anonymizedBookingEntry.getLocationId() == 30
                         || anonymizedBookingEntry.getLocationId() == 31),
@@ -69,7 +69,7 @@ public class FilterProcessesToLocationsTopology {
 
         // Name the branches
         for (int i = 0; i < locationBranches.length; i++) {
-            KStream<byte[], AnonymizedBookingEntry> branch = locationBranches[i];
+            KStream<Integer, AnonymizedBookingEntry> branch = locationBranches[i];
 
             int i_helper = i;
             KStream<String, AnonymizedBookingEntry> keyedStream = branch.selectKey((key, value) -> {

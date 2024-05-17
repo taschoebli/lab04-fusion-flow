@@ -16,21 +16,25 @@ public class SessionStats {
     float percentageOfCustomersTooLate;
 
     @SerializedName("numberOfLateCustomers")
-    float numberOfLateCustomers;
+    int numberOfLateCustomers;
 
     @SerializedName("totalLostTime")
     long totalLostTime;
 
+    @SerializedName("numberOfBookings")
+    int numberOfBookings;
 
-    public SessionStats(float averageSessionDelay, float percentageOfCustomersTooLate, float numberOfLateCustomers, long totalLostTime) {
+    public SessionStats(float averageSessionDelay, float percentageOfCustomersTooLate, int numberOfLateCustomers, long totalLostTime, int numberOfBookings) {
         this.averageSessionDelay = averageSessionDelay;
         this.percentageOfCustomersTooLate = percentageOfCustomersTooLate;
         this.numberOfLateCustomers = numberOfLateCustomers;
         this.totalLostTime = totalLostTime;
+        this.numberOfBookings = numberOfBookings;
     }
 
     public float getAverageSessionDelay() {
-        return averageSessionDelay;
+        //convert to minutes
+        return (this.averageSessionDelay / 1000 / 60);
     }
 
     public void setAverageSessionDelay(float averageSessionDelay) {
@@ -45,11 +49,11 @@ public class SessionStats {
         this.percentageOfCustomersTooLate = percentageOfCustomersTooLate;
     }
 
-    public float getNumberOfLateCustomers() {
+    public int getNumberOfLateCustomers() {
         return numberOfLateCustomers;
     }
 
-    public void setNumberOfLateCustomers(float numberOfLateCustomers) {
+    public void setNumberOfLateCustomers(int numberOfLateCustomers) {
         this.numberOfLateCustomers = numberOfLateCustomers;
     }
 
@@ -61,11 +65,19 @@ public class SessionStats {
         this.totalLostTime = totalLostTime;
     }
 
+    public int getNumberOfBookings() {
+        return numberOfBookings;
+    }
+
+    public void setNumberOfBookings(int numberOfBookings) {
+        this.numberOfBookings = numberOfBookings;
+    }
     @Override
     public String toString(){
         return "Session Stats: \n" +
-                "    average session delay: " + this.averageSessionDelay + "\n" +
-                "    percentage of too late customers: " + this.percentageOfCustomersTooLate + "\n" +
+                "    number of total bookings: " + this.numberOfLateCustomers + "\n" +
+                "    average session delay: " + (this.averageSessionDelay / 1000 / 60)+ " minutes\n" +
+                "    percentage of too late customers: " + this.percentageOfCustomersTooLate + "%\n" +
                 "    number of too late customers: " + this.numberOfLateCustomers;
     }
 }
