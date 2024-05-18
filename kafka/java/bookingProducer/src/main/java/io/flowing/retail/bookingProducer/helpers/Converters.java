@@ -24,7 +24,7 @@ public class Converters {
     public static JSONObject toJSON(SessionInfo sessionInfo) {
         JSONObject sessionInfoJson = new JSONObject();
         //Here we could add the Id of the booking as well, but currently not necessary
-        sessionInfoJson.put("id", sessionInfo.getBookingId());
+        sessionInfoJson.put("bookingId", sessionInfo.getBookingId());
         sessionInfoJson.put("actualStartTime", sessionInfo.getActualStartTime());
 
         return sessionInfoJson;

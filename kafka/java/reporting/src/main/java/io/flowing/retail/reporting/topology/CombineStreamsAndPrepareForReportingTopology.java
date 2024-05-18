@@ -1,7 +1,6 @@
 package io.flowing.retail.reporting.topology;
 
 import io.flowing.retail.reporting.Serialization.json.*;
-import io.flowing.retail.reporting.Serialization.model.AnonymizedBookingEntry;
 import io.flowing.retail.reporting.Serialization.model.BookingEntry;
 import io.flowing.retail.reporting.Serialization.model.NonAvroAnonymizedBookingEntry;
 import io.flowing.retail.reporting.Serialization.model.SessionInfo;
@@ -26,8 +25,9 @@ public class CombineStreamsAndPrepareForReportingTopology {
         KTable<Integer, BookingEntry> bookingsStream =
                 builder.table("bookings", Consumed.with(Serdes.Integer(), new BookingEntrySerdes()));
 
-        KStream<byte[], SessionInfo> sessionsSteam =
-                builder.stream("sessionInfos", Consumed.with(Serdes.ByteArray(), new SessionInfoSerdes()));
+        KStream<Integer, SessionInfo> sessionsSteam =
+                builder.stream("sessionInfos", Consumed.with(Serdes.Integer(), new SessionInfoSerdes()));
+
 
         //Step one: filter out timestamp of bookings
         KTable<Integer, BookingEntry> bookingEntriesWithoutTimestamp =
@@ -64,9 +64,6 @@ public class CombineStreamsAndPrepareForReportingTopology {
                             return anonymizedBookingEntry;
                         });
 
-        //step 3: key the streams
-        KStream<Integer, SessionInfo> keyedSessionsStream = sessionsSteam.selectKey((key, value) -> value.getBookingId());
-
         //step 4: join the streams - first create joiner
         ValueJoiner<SessionInfo, NonAvroAnonymizedBookingEntry, BookingEntrySessionInfo> valueJoiner = BookingEntrySessionInfo::new;
 
@@ -75,13 +72,13 @@ public class CombineStreamsAndPrepareForReportingTopology {
                 Joined.with(Serdes.Integer(), new SessionInfoSerdes(), new NonAvroAnonymizedBookingEntrySerdes());
 
         // Perform the join operation
-        KStream<Integer, BookingEntrySessionInfo> joinedStream = keyedSessionsStream.join(
+        KStream<Integer, BookingEntrySessionInfo> joinedStream = sessionsSteam.join(
                 anonymizedBookingEntries,
                 valueJoiner,
                 joinParams
         );
 
-       //re-key the stream
+        //re-key the stream
         KStream<String, BookingEntrySessionInfo> allKeyedStream = joinedStream.selectKey((key, value) -> {
             if (value.getBookingEntry().getLocationId() == 1 || value.getBookingEntry().getLocationId() == 11) {
                 return Constants.LOCATION_ZUERICH;
@@ -101,15 +98,15 @@ public class CombineStreamsAndPrepareForReportingTopology {
         Aggregator<String, BookingEntrySessionInfo, SessionStats> sessionStatsAggregator = (key, bookingSession, sessionStats) -> {
          DateTimeFormatter formatter = DateTimeFormat.forPattern(Constants.DATE_TIME_PATTERN);
             DateTime actualDateTime = formatter.parseDateTime(bookingSession.getSessionInfo().getActualStartTime());
-            DateTime bookedDateTime = formatter.parseDateTime(String.valueOf(bookingSession.getBookingEntry().getBookingDateTime()));
+            DateTime bookedDateTime = formatter.parseDateTime(String.valueOf(bookingSession.getBookingEntry().getEventDateTime()));
             long delay = actualDateTime.getMillis() - bookedDateTime.getMillis();
             long newTotalDelay = (sessionStats.getTotalLostTime() + delay);
-            int newTotalBookings = (sessionStats.getNumberOfBookings() + 1);
+            int newTotalSessions = (sessionStats.getNumberOfSessions() + 1);
             int newTotalCustomersTooLate = delay != 0 ? (sessionStats.getNumberOfLateCustomers() + 1) : sessionStats.getNumberOfLateCustomers();
-            float newAverageSessionDelay = ((float) newTotalDelay / newTotalBookings);
+            float newAverageSessionDelay = ((float) newTotalDelay / newTotalSessions);
             float newPercentageCustomersTooLate = newTotalCustomersTooLate == 0 ? 0 :
-                    ((float) newTotalCustomersTooLate / newTotalBookings * 100);
-            return new SessionStats(newAverageSessionDelay, newPercentageCustomersTooLate, newTotalCustomersTooLate, newTotalDelay, newTotalBookings);
+                    ((float) newTotalCustomersTooLate / newTotalSessions * 100);
+            return new SessionStats(newAverageSessionDelay, newPercentageCustomersTooLate, newTotalCustomersTooLate, newTotalDelay, newTotalSessions);
         };
 
         KTable<String, SessionStats> sessionStatsByLocation = groupedByLocation.aggregate(

@@ -21,15 +21,15 @@ public class SessionStats {
     @SerializedName("totalLostTime")
     long totalLostTime;
 
-    @SerializedName("numberOfBookings")
-    int numberOfBookings;
+    @SerializedName("numberOfSessions")
+    int numberOfSessions;
 
-    public SessionStats(float averageSessionDelay, float percentageOfCustomersTooLate, int numberOfLateCustomers, long totalLostTime, int numberOfBookings) {
+    public SessionStats(float averageSessionDelay, float percentageOfCustomersTooLate, int numberOfLateCustomers, long totalLostTime, int numberOfSessions) {
         this.averageSessionDelay = averageSessionDelay;
         this.percentageOfCustomersTooLate = percentageOfCustomersTooLate;
         this.numberOfLateCustomers = numberOfLateCustomers;
         this.totalLostTime = totalLostTime;
-        this.numberOfBookings = numberOfBookings;
+        this.numberOfSessions = numberOfSessions;
     }
 
     public float getAverageSessionDelay() {
@@ -58,19 +58,20 @@ public class SessionStats {
     }
 
     public long getTotalLostTime() {
-        return totalLostTime;
+        //convert to minutes
+        return (this.totalLostTime / 1000 / 60);
     }
 
     public void setTotalLostTime(long totalLostTime) {
         this.totalLostTime = totalLostTime;
     }
 
-    public int getNumberOfBookings() {
-        return numberOfBookings;
+    public int getNumberOfSessions() {
+        return numberOfSessions;
     }
 
-    public void setNumberOfBookings(int numberOfBookings) {
-        this.numberOfBookings = numberOfBookings;
+    public void setNumberOfSessions(int numberOfSessions) {
+        this.numberOfSessions = numberOfSessions;
     }
     @Override
     public String toString(){

@@ -17,9 +17,9 @@ import java.util.Map;
 public class ReportingService {
 
     private final HostInfo hostInfo;
-    private final KafkaStreams streams;
+    private final KafkaStreams[] streams;
 
-    public ReportingService(HostInfo hostInfo, KafkaStreams streams) {
+    public ReportingService(HostInfo hostInfo, KafkaStreams[] streams) {
         this.hostInfo = hostInfo;
         this.streams = streams;
     }
@@ -41,9 +41,9 @@ public class ReportingService {
     }
 
     void getLocationCount(Context ctx) {
-        /*Map<String, Long> monitor = new HashMap<>();
+        Map<String, Long> monitor = new HashMap<>();
 
-        ReadOnlyKeyValueStore<String, Long> store = streams.store(
+        ReadOnlyKeyValueStore<String, Long> store = streams[0].store(
                 StoreQueryParameters.fromNameAndType(
                         "bookingCount",
                         QueryableStoreTypes.keyValueStore()));
@@ -56,13 +56,13 @@ public class ReportingService {
             monitor.put(aoi, count);
         }
         range.close();
-        ctx.json(monitor);*/
+        ctx.json(monitor);
     }
 
     void getSessionStats(Context ctx){
         Map<String, SessionStats> monitor = new HashMap<>();
 
-        ReadOnlyKeyValueStore<String, SessionStats> store = streams.store(
+        ReadOnlyKeyValueStore<String, SessionStats> store = streams[1].store(
                 StoreQueryParameters.fromNameAndType(
                         "sessionStats",
                         QueryableStoreTypes.keyValueStore()));
@@ -79,7 +79,7 @@ public class ReportingService {
     }
 
     void getEventDateTimeCount(Context ctx) {
-        Map<String, Long> monitor = new HashMap<>();
+        /*Map<String, Long> monitor = new HashMap<>();
 
         ReadOnlyWindowStore<byte[], Long> store = streams.store(
                 StoreQueryParameters.fromNameAndType(
@@ -95,6 +95,6 @@ public class ReportingService {
             }
             range.close();
             ctx.json(monitor);
-        }
+        }*/
     }
 }

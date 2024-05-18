@@ -37,7 +37,7 @@ public class SessionInfoProducer {
     }
 
     public void produceSessionInfos() throws Exception {
-        KafkaProducer<byte[], String> producer;
+        KafkaProducer<Integer, String> producer;
 
         List<BookingEntry> bookings = bookingRepository.findAll();
 
@@ -45,23 +45,23 @@ public class SessionInfoProducer {
             Properties properties = new Properties();
             properties.load(props);
             // Create Kafka booking
-            producer = new KafkaProducer<byte[], String>(properties);
+            producer = new KafkaProducer<Integer, String>(properties);
         }
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern(Constants.DATE_TIME_PATTERN);
 
-        for (int id = 1; id <= bookings.size(); id++) {
-
-            DateTime dt = formatter.parseDateTime(bookings.get(id).getEventDateTime());
+        for (int i = 0; i <= bookings.size(); i++) {
+            DateTime dt = formatter.parseDateTime(bookings.get(i).getEventDateTime());
+            Integer id = bookings.get(i).getBookingId();
             DateTime actualTime = determineActualSessionTime(dt);
             SessionInfo sessionInfo = new SessionInfo();
             sessionInfo.setBookingId(id);
             sessionInfo.setActualStartTime(actualTime.toString(formatter));
             JSONObject sessionJson = Converters.toJSON(sessionInfo);
-            byte[] key = null;
+
             String value = sessionJson.toString();
             System.out.println("New actual Session data - " + value);
-            ProducerRecord<byte[], String> record = new ProducerRecord<>(TOPIC_NAME, key, value);
+            ProducerRecord<Integer, String> record = new ProducerRecord<>(TOPIC_NAME, id, value);
             producer.send(record);
             Thread.sleep(30000);
 

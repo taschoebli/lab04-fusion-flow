@@ -25,22 +25,32 @@ public class ReportingApplication {
   }
 
   public void runApp() {
-      Topology topology = CombineStreamsAndPrepareForReportingTopology.build();
+      KafkaStreams[] streams = new KafkaStreams[2];
 
-      Properties config = new Properties();
-      config.put(StreamsConfig.APPLICATION_ID_CONFIG, "reportingStream");
-      config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
+      Topology topologySessionMonitor = CombineStreamsAndPrepareForReportingTopology.build();
+      Topology locationCount = FilterProcessesToLocationsTopology.build();
 
-      KafkaStreams stream = new KafkaStreams(topology, config);
+      Properties configSessionMonitor= new Properties();
+      configSessionMonitor.put(StreamsConfig.APPLICATION_ID_CONFIG, "sessionMonitor");
+      configSessionMonitor.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
 
-      Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
+      Properties configLocationCount = new Properties();
+      configLocationCount.put(StreamsConfig.APPLICATION_ID_CONFIG, "locationCount");
+      configLocationCount.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
+
+      streams[0] = new KafkaStreams(locationCount, configLocationCount);
+      streams[1] = new KafkaStreams(topologySessionMonitor, configSessionMonitor);
+
+      Runtime.getRuntime().addShutdownHook(new Thread(streams[0]::close));
+      Runtime.getRuntime().addShutdownHook(new Thread(streams[1]::close));
 
       System.out.println("Starting stream processing");
-      stream.start();
+      streams[0].start();
+      streams[1].start();
 
       // start the REST service
       HostInfo hostInfo = new HostInfo("localhost", 7070);
-      ReportingService service = new ReportingService(hostInfo, stream);
+      ReportingService service = new ReportingService(hostInfo, streams);
       service.start();
   }
 
