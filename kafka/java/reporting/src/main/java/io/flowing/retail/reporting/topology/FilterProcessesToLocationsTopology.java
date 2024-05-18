@@ -105,6 +105,7 @@ public class FilterProcessesToLocationsTopology {
                 return Constants.INVALID_LOCATION;
             }
         });
+
         KGroupedStream<String, AnonymizedBookingEntry> groupedByLocation = allKeyedStream.groupByKey(Grouped.with(Serdes.String(), AvroSerdes.avroAnonymizedBookingEntry("http://localhost:8081", false)));
         KTable<String, Long> bookingCountByLocation = groupedByLocation.count(Materialized.as("bookingCount"));
 
