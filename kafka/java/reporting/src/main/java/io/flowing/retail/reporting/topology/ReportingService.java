@@ -79,9 +79,9 @@ public class ReportingService {
     }
 
     void getEventDateTimeCount(Context ctx) {
-        /*Map<String, Long> monitor = new HashMap<>();
+        Map<String, Long> monitor = new HashMap<>();
 
-        ReadOnlyWindowStore<byte[], Long> store = streams.store(
+        ReadOnlyWindowStore<byte[], Long> store = streams[2].store(
                 StoreQueryParameters.fromNameAndType(
                         "eventDateTimeCounts",
                         QueryableStoreTypes.windowStore()));
@@ -95,6 +95,6 @@ public class ReportingService {
             }
             range.close();
             ctx.json(monitor);
-        }*/
+        }
     }
 }
