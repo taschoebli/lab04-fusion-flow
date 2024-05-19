@@ -19,12 +19,12 @@ public class SessionStats {
     int numberOfLateCustomers;
 
     @SerializedName("totalLostTime")
-    long totalLostTime;
+    float totalLostTime;
 
     @SerializedName("numberOfSessions")
     int numberOfSessions;
 
-    public SessionStats(float averageSessionDelay, float percentageOfCustomersTooLate, int numberOfLateCustomers, long totalLostTime, int numberOfSessions) {
+    public SessionStats(float averageSessionDelay, float percentageOfCustomersTooLate, int numberOfLateCustomers, float totalLostTime, int numberOfSessions) {
         this.averageSessionDelay = averageSessionDelay;
         this.percentageOfCustomersTooLate = percentageOfCustomersTooLate;
         this.numberOfLateCustomers = numberOfLateCustomers;
@@ -57,12 +57,12 @@ public class SessionStats {
         this.numberOfLateCustomers = numberOfLateCustomers;
     }
 
-    public long getTotalLostTime() {
+    public float getTotalLostTime() {
         //convert to minutes
         return (this.totalLostTime / 1000 / 60);
     }
 
-    public void setTotalLostTime(long totalLostTime) {
+    public void setTotalLostTime(float totalLostTime) {
         this.totalLostTime = totalLostTime;
     }
 
