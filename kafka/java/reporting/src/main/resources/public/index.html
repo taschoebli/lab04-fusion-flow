@@ -52,8 +52,12 @@
                 <li class="nav-item">
                     <a href="#sessionMonitorDiv" class="nav-link" data-bs-toggle="tab">Session Monitor</a>
                 </li>
-                <li role="presentation" class="nav-item"><a href="#windowMonitorDiv" class="nav-link" data-toggle="tab">Window
-                    Monitor</a></li>
+                <li class="nav-item">
+                    <a href="#windowMonitorDiv" class="nav-link" data-bs-toggle="tab">Window Monitor</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#fraudDetectionDiv" class="nav-link" data-bs-toggle="tab">Fraud Detection</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -83,12 +87,24 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class="tab-pane" role="tabpanel" id="windowMonitorDiv">
-
+                <div class="tab-pane fade" id="windowMonitorDiv" role="tabpanel">
                     <table id="windowMonitorTable" class="table-container">
                         <thead>
                         <tr>
                             <th>EventDateTime</th>
+                            <th>Count</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="fraudDetectionDiv" role="tabpanel">
+                    We define possibly fraudulent behavior when the same customer tries to make multiple
+                    bookings within one minute.
+                    <table id="fraudDetectionTable" class="table-container">
+                        <thead>
+                        <tr>
+                            <th>Customer</th>
                             <th>Count</th>
                         </tr>
                         </thead>
@@ -135,7 +151,7 @@
                         let cell1 = $('<td>').text(key);
                         let cell2 = $('<td>');
 
-                        if (tableId === 'locationMonitorTable') {
+                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable') {
                             cell2.text(value);
                         } else {
                             cell2.append(jsonToUl(value));
@@ -154,6 +170,7 @@
             fetchData('/locationMonitor', 'locationMonitorTable');
             fetchData('/windowMonitor', 'windowMonitorTable');
             fetchData('/sessionMonitor', 'sessionMonitorTable');
+            fetchData('/fraudDetection', 'fraudDetectionTable');
         }
 
         setInterval(refreshData, 2000); // Refresh data every 2 seconds

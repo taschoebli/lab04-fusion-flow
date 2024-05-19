@@ -13,7 +13,6 @@
 		<module>qrInvoice</module>
 		<module>accounting</module>
 		<module>reporting</module>
-		<module>windowing</module>
 		<module>bookingProducer</module>
     </modules>
 	<build>

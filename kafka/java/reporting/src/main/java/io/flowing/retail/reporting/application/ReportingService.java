@@ -1,4 +1,4 @@
-package io.flowing.retail.reporting.topology;
+package io.flowing.retail.reporting.application;
 
 import io.flowing.retail.reporting.Serialization.model.aggregations.SessionStats;
 import org.apache.kafka.streams.KafkaStreams;
@@ -19,6 +19,8 @@ public class ReportingService {
     private final HostInfo hostInfo;
     private final KafkaStreams[] streams;
 
+    Map<String, Long> fraudulentCount = new HashMap<>();
+
     public ReportingService(HostInfo hostInfo, KafkaStreams[] streams) {
         this.hostInfo = hostInfo;
         this.streams = streams;
@@ -35,7 +37,7 @@ public class ReportingService {
         // Define a route for querying in the key-value store
         app.get("/locationMonitor", this::getLocationCount);
         app.get("/windowMonitor", this::getEventDateTimeCount);
-
+        app.get("/fraudDetection", this::getSuspiciousCustomers);
         app.get("/sessionMonitor", this::getSessionStats);
 
     }
@@ -59,6 +61,26 @@ public class ReportingService {
         ctx.json(monitor);
     }
 
+    void getSuspiciousCustomers(Context ctx) {
+        ReadOnlyWindowStore<String, Long> store = streams[3].store(
+                StoreQueryParameters.fromNameAndType(
+                        "customerCounts",
+                        QueryableStoreTypes.windowStore()));
+
+        KeyValueIterator<Windowed<String>, Long> frauds = store.all();
+        while (frauds.hasNext()) {
+            KeyValue<Windowed<String>, Long> next = frauds.next();
+            if (next.value == 1) continue;
+            Windowed<String> key = next.key;
+            Long value = next.value;
+            //save customer as fraudulent
+            fraudulentCount.put(key.toString(), value);
+        }
+        ctx.json(fraudulentCount);
+        frauds.close();
+    }
+
+
     void getSessionStats(Context ctx){
         Map<String, SessionStats> monitor = new HashMap<>();
 
@@ -79,7 +101,7 @@ public class ReportingService {
     }
 
     void getEventDateTimeCount(Context ctx) {
-        Map<String, Long> monitor = new HashMap<>();
+       /* Map<String, Long> monitor = new HashMap<>();
 
         ReadOnlyWindowStore<byte[], Long> store = streams[2].store(
                 StoreQueryParameters.fromNameAndType(
@@ -95,6 +117,6 @@ public class ReportingService {
             }
             range.close();
             ctx.json(monitor);
-        }
+        }*/
     }
 }
