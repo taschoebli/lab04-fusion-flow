@@ -22,12 +22,30 @@ JSON Object for better understanding of the data received in a kafka stream:
 
 
 ## Interactive Queries
-In order to fulfill the requirement "Interactive queries" from exercise 9 [ReportingService](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/ReportingService.java) has been introduced. This service is responsible for exposing the interactive queries to the outside world. The interactive queries are the following:
-- `/locationMonitor`: Return the total amount of bookings per location.
+In order to fulfill the requirement "Interactive queries" from exercise 9, several topologies have been introduced. The can all be queried from the [ReportingService](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/application/ReportingService.java) by applying the following methods:
+
+
+- [FilterProcessesToLocations](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/FilterProcessesToLocationsTopology.java) The idea is to get the bookings and filter them by location. The call is `/locationMonitor`: Returns the total amount of bookings per location.
+The following image shows corresponding reporting monitor:
+![ReportingMonitor](../../../docs/ReportingMonitor.png)
+
+
+- [CombineStreamsAndPrepareForReporting](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/CombineStreamsAndPrepareForReportingTopology.java) The idea is to get statistics from a certain location by combining two streams. The call is `/sessionMonitor`: Returns averageSessionDelay, percentageOfCustomersTooLate, numberOfLateCustomers, totalLostTime and numberOfSessions per location.
+The following image shows corresponding reporting monitor:
+  ![SessionMonitor](../../../docs/SessionMonitor.png)
+
+
+- [Window](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/WindowTopology.java) The idea is to get the number of bookings per day per location. The call is `/windowMonitor`: Returns number of bookings per day per location.
+  The following image shows corresponding reporting monitor:
+  ![WindowMonitor](../../../docs/WindowMonitor.png)
+
+
+- [FraudDetection](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/FraudDetectionTopology.java) The idea is to measure fraudulent behaviour. In case a booking within a minute is made by the same person, an entry will be made here. This feature is used to detect an misuse of for example a stolen credit card.  The call is `/fraudDetection`: Returns count and customer Name of a fraudulent booking.
+  ![FraudDetection](../../../docs/FraudDetection.png)
+
 
 The reporting monitor is accessible through the Javalin web server with the following address:
 http://localhost:7070
 
-The following image shows the reporting monitor:
-![../../../docs/ReportingMonitor.png](../../../docs/ReportingMonitor.png)
+
 

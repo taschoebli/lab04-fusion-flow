@@ -1,4 +1,8 @@
-# Fusion Flow
+# Fusion Flow Assignment # 1
+
+Important!!!
+For second part of assignment, please go [here](#fusion-flow-assignment--2)
+
 This project simulates a typical business logic workflow using event-driven architecture. The implementation is based on
 the implementation of [flowing retail](https://github.com/scs-edpo/lab04-flowing-retail).
 We use Apache Kafka and Camunda Process orchestration to facilitate our workflow. 
@@ -36,20 +40,20 @@ Please find all ADRs in the [docs/adr](docs/adr) folder.
 Use the Maven task "flowing-retail-kafka" to clean and rebuild all projects in the application. To run the Flowing Retail project you first need to be sure that all the relevant projects have been built at least once: (Maven Window -> Run Maven Build "green play button" )
 
 ```
-  $ cd .\kafka\java\
-  $ mvn clean install
+  cd .\kafka\java\
+  mvn clean install
 ```
 
 Then you can execute:
 
 ```
-  $ docker-compose -f docker-compose.yml up --build
+  docker-compose -f docker-compose.yml up --build
 ```
 
 (omit --build if you have already built the images):
 
 ```
-  $ docker-compose -f docker-compose.yml up
+  docker-compose -f docker-compose.yml up
 ```
 from the directory [runner/docker-compose](runner/docker-compose).
 
@@ -150,3 +154,36 @@ All team members contributed equally to the group project.
 - We learned how to use Maven & Spring to build our projects.
 - We all did not have any experience with Kafka  & Camunda. We would have profited more from the guest lecture from the Camunda team (Niall Deehan) if we had more experience with the tool. It would have been great if Camunda 8 was introduced in the lecture, since it is the recommended version for new projects. We regret having started with Camunda 7.
 - Group projects with small group size (not more than 3 people) are more efficient and effective. We had a good communication and could easily coordinate our tasks.
+
+
+# Fusion Flow Assignment # 2
+In the second part of the project, focus was put on stream processing with kafka. 
+
+## Building the project
+To run the Flowing Retail project, assignment #2,  you first need to be sure that all the relevant projects, namely [bookingProducer](kafka/java/bookingProducer) and [reporting](kafka/java/reporting) have been built at least once: (Maven Window -> Run Maven Build "green play button" )
+
+```
+  cd .\kafka\java\
+  mvn clean install
+```
+
+Then you can execute:
+
+```
+  docker-compose -f docker-compose-stream-only.yml up --build
+```
+
+(omit --build if you have already built the images):
+
+```
+  docker-compose -f docker-compose-stream-only.yml up
+```
+from the directory [runner/docker-compose](runner/docker-compose).
+
+### Launching the application
+1. There is a [docker-compose](runner/docker-compose/docker-compose-stream-only.yml) script that, when executed, launches the kafka environment that is needed for this project. Wait a few minutes...
+2. Run the [BookingProducer](kafka/java/bookingProducer/src/main/java/io/flowing/retail/bookingProducer/BookingProducer.java) project to produce booking events to the kafka topic.
+3. Run the [SessionInfoProducer](kafka/java/bookingProducer/src/main/java/io/flowing/retail/bookingProducer/SessionInfoProducer.java) project to produce further events to the kafka topic.
+4. Run the [ReportingApplication](kafka/java/reporting/src/main/java/io/flowing/retail/reporting/ReportingApplication.java) project to start the reporting service which you can access here: http://localhost:7070.
+
+These are all the important steps. Have fun!
