@@ -184,6 +184,6 @@ from the directory [runner/docker-compose](runner/docker-compose).
 1. There is a [docker-compose](runner/docker-compose/docker-compose-stream-only.yml) script that, when executed, launches the kafka environment that is needed for this project. Wait a few minutes...
 2. Run the [BookingProducer](kafka/java/bookingProducer/src/main/java/io/flowing/retail/bookingProducer/BookingProducer.java) project to produce booking events to the kafka topic.
 3. Run the [SessionInfoProducer](kafka/java/bookingProducer/src/main/java/io/flowing/retail/bookingProducer/SessionInfoProducer.java) project to produce further events to the kafka topic.
-4. Run the [ReportingApplication](kafka/java/reporting/src/main/java/io/flowing/retail/reporting/ReportingApplication.java) project to start the reporting service which you can access here: http://localhost:7070.
+4. Run the [ReportingApplication](kafka/java/reporting/src/main/java/io/flowing/retail/reporting/ReportingApplication.java) project to start the reporting service. Please refer to this [README](kafka/java/reporting/README.md) for all the information in detail. Next, you can access the service here: http://localhost:7070.
 
 These are all the important steps. Have fun!
