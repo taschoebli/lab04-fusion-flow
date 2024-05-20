@@ -39,6 +39,7 @@ public class BookingEntry implements EventDateTime, BookingDateTime {
     @SerializedName("timestamp")
     String timestamp;
 
+    @Override
     public String getEventDateTimeCustom() {
         return this.eventDateTime;
     }

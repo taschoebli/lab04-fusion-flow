@@ -70,7 +70,7 @@
                         <thead>
                         <tr>
                             <th>Location</th>
-                            <th>Booking Count</th>
+                            <th>Total Booking Count</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -88,11 +88,12 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="windowMonitorDiv" role="tabpanel">
+                    Here the windows are monitored.
                     <table id="windowMonitorTable" class="table-container">
                         <thead>
                         <tr>
-                            <th>EventDateTime</th>
-                            <th>Count</th>
+                            <th>Location</th>
+                            <th>Bookings Today</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -151,7 +152,7 @@
                         let cell1 = $('<td>').text(key);
                         let cell2 = $('<td>');
 
-                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable') {
+                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable' || tableId === 'windowMonitorTable') {
                             cell2.text(value);
                         } else {
                             cell2.append(jsonToUl(value));

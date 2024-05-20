@@ -5,13 +5,14 @@ import io.flowing.retail.reporting.Serialization.model.BookingEntry;
 import io.flowing.retail.reporting.helpers.Constants;
 import io.flowing.retail.reporting.helpers.EventDateTimeExtractor;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.WindowStore;
 
 import java.awt.print.Book;
+import java.time.Duration;
 
 public class WindowTopology {
 
@@ -23,24 +24,19 @@ public class WindowTopology {
                 .withTimestampExtractor(new EventDateTimeExtractor());
 
         // Source Processor
-        /*KStream<byte[], BookingEntry> stream =
-                builder.stream("bookings_simple", bookingEntryConsumerOptions);*/
         KStream<Integer, BookingEntry> stream =
-                builder.stream("bookings", Consumed.with(Serdes.Integer(), new BookingEntrySerdes()));
+                builder.stream("bookings", bookingEntryConsumerOptions);
 
-        TimeWindows tumblingWindow = TimeWindows.ofSizeWithNoGrace(Constants.WINDOW_SIZE);
+        // Now we will create a tumbling window of 1 day since we are interested in the number of bookings per day per Location
+        TimeWindows tumblingWindow = TimeWindows.ofSizeWithNoGrace(Duration.ofDays(1));
 
-        // Stream processor
-        stream.foreach((key, value) -> System.out.println(" Value: " + value));
-
-        /*KTable<Windowed<byte[]>, Long> eventDateTimeCounts = stream
-                .groupByKey()
-                .windowedBy(tumblingWindow)
-                .count(Materialized.as("eventDateTimeCounts"));
-        //.suppress(Supp1ressed.untilWindowCloses(Suppressed.BufferConfig.unbounded().shutDownWhenFull()));
-
-        // For debugging only
-        eventDateTimeCounts.toStream().print(Printed.<Windowed<byte[]>, Long>toSysOut().withLabel("eventDateTimeCounts"));*/
+        KTable<Windowed<String>, Long> eventDateTimeCounts =
+                stream
+                        .groupBy((k, v) -> v.getLocationId().toString(), Grouped.with(Serdes.String(), new BookingEntrySerdes()))
+                        .windowedBy(tumblingWindow)
+                        .count(Materialized.<String, Long, WindowStore<Bytes, byte[]>>as("eventDateTimeCounts")
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(Serdes.Long()));
 
         return builder.build();
     }

@@ -16,7 +16,7 @@ public class BookingTimeExtractor implements TimestampExtractor {
         BookingDateTime event = (BookingDateTime) consumerRecord.value();
         if (event != null && event.getBookingDateTimeCustom() != null) {
             String timestamp = event.getBookingDateTimeCustom();
-            System.out.println("Extracting timestamp: " + timestamp);
+            System.out.println("GetBookingDateTime: Extracting timestamp: " + timestamp);
             DateTime dateTime = formatter.parseDateTime(timestamp);
             return dateTime.getMillis();
         }

@@ -20,6 +20,7 @@ public class ReportingService {
     private final KafkaStreams[] streams;
 
     Map<String, Long> fraudulentCount = new HashMap<>();
+    Map<String, Long> eventDayCount = new HashMap<>();
 
     public ReportingService(HostInfo hostInfo, KafkaStreams[] streams) {
         this.hostInfo = hostInfo;
@@ -101,22 +102,23 @@ public class ReportingService {
     }
 
     void getEventDateTimeCount(Context ctx) {
-       /* Map<String, Long> monitor = new HashMap<>();
 
-        ReadOnlyWindowStore<byte[], Long> store = streams[2].store(
+        ReadOnlyWindowStore<String, Long> store = streams[2].store(
                 StoreQueryParameters.fromNameAndType(
                         "eventDateTimeCounts",
                         QueryableStoreTypes.windowStore()));
 
-        try (KeyValueIterator<Windowed<byte[]>, Long> range = store.all()) {
+        try (KeyValueIterator<Windowed<String>, Long> range = store.all()) {
             while (range.hasNext()) {
-                KeyValue<Windowed<byte[]>, Long> next = range.next();
-                String aoi = new String(next.key.key());
-                long count = next.value;
-                monitor.put(aoi, count);
+                KeyValue<Windowed<String>, Long> next = range.next();
+                if(next.value == 1) continue;
+                Windowed<String> key = next.key;
+                long value = next.value;
+                //Save event day count
+                eventDayCount.put(key.toString(), value);
             }
             range.close();
-            ctx.json(monitor);
-        }*/
+            ctx.json(eventDayCount);
+        }
     }
 }
