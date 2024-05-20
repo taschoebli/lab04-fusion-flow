@@ -32,7 +32,7 @@ public class WindowTopology {
 
         KTable<Windowed<String>, Long> eventDateTimeCounts =
                 stream
-                        .groupBy((k, v) -> Constants.locationIdToLocationString(v.getLocationId()), Grouped.with(Serdes.String(), new BookingEntrySerdes()))
+                        .groupBy((k, v) -> (Constants.eventDateTimeCustomFormatToDate(v.getEventDateTimeCustom()) + "-" + Constants.locationIdToLocationString(v.getLocationId())), Grouped.with(Serdes.String(), new BookingEntrySerdes()))
                         .windowedBy(tumblingWindow)
                         .count(Materialized.<String, Long, WindowStore<Bytes, byte[]>>as("eventDateTimeCounts")
                                 .withKeySerde(Serdes.String())
