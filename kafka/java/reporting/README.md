@@ -47,5 +47,10 @@ The following image shows corresponding reporting monitor:
 The reporting monitor is accessible through the Javalin web server with the following address:
 http://localhost:7070
 
+## Windowed Operations
+Two windowed operations have been implemented. The first one is a tumbling window in order to get the events per day per location. The code of the figure depicted below can be found here: [WindowToplogy](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/WindowTopology.java)
 
+![WindowEventDateTimeCount](../../../docs/diagrams/topology_window_eventDateTimeCount.png)
+
+The second windowed operation is a hopping window...
 
