@@ -99,11 +99,12 @@ public class CombineStreamsAndPrepareForReportingTopology {
          DateTimeFormatter formatter = DateTimeFormat.forPattern(Constants.DATE_TIME_PATTERN);
             DateTime actualDateTime = formatter.parseDateTime(bookingSession.getSessionInfo().getActualStartTime());
             DateTime bookedDateTime = formatter.parseDateTime(String.valueOf(bookingSession.getBookingEntry().getEventDateTime()));
-            long delay = actualDateTime.getMillis() - bookedDateTime.getMillis();
+            float delay = ((float) (actualDateTime.getMillis() - bookedDateTime.getMillis()) / 1000 / 60);
+
             float newTotalDelay = (sessionStats.getTotalLostTime() + delay);
             int newTotalSessions = (sessionStats.getNumberOfSessions() + 1);
             int newTotalCustomersTooLate = delay != 0 ? (sessionStats.getNumberOfLateCustomers() + 1) : sessionStats.getNumberOfLateCustomers();
-            float newAverageSessionDelay = (newTotalDelay / newTotalSessions);
+            float newAverageSessionDelay = newTotalCustomersTooLate == 0 ? 0 : (newTotalDelay / newTotalCustomersTooLate);
             float newPercentageCustomersTooLate = newTotalCustomersTooLate == 0 ? 0 :
                     ((float) newTotalCustomersTooLate / newTotalSessions * 100);
             return new SessionStats(newAverageSessionDelay, newPercentageCustomersTooLate, newTotalCustomersTooLate, newTotalDelay, newTotalSessions);

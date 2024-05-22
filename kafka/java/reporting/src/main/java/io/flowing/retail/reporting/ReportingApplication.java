@@ -59,10 +59,16 @@ public class ReportingApplication {
       Runtime.getRuntime().addShutdownHook(new Thread(streams[3]::close));
 
       System.out.println("Starting stream processing");
+      streams[0].cleanUp();
+      streams[1].cleanUp();
+      streams[2].cleanUp();
+      streams[3].cleanUp();
+
       streams[0].start();
       streams[1].start();
       streams[2].start();
       streams[3].start();
+
 
       // start the REST service
       HostInfo hostInfo = new HostInfo("localhost", 7070);

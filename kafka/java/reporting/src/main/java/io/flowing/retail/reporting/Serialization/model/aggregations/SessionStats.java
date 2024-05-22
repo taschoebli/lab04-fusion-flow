@@ -33,8 +33,7 @@ public class SessionStats {
     }
 
     public float getAverageSessionDelay() {
-        //convert to minutes
-        return (this.averageSessionDelay / 1000 / 60);
+        return this.averageSessionDelay;
     }
 
     public void setAverageSessionDelay(float averageSessionDelay) {
@@ -58,8 +57,7 @@ public class SessionStats {
     }
 
     public float getTotalLostTime() {
-        //convert to minutes
-        return (this.totalLostTime / 1000 / 60);
+        return this.totalLostTime;
     }
 
     public void setTotalLostTime(float totalLostTime) {
