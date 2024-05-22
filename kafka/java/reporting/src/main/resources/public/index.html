@@ -66,6 +66,7 @@
         <div class="col-md-12">
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="locationMonitorDiv" role="tabpanel">
+                    The location monitor shows the number of bookings per arena in total over all available entries.
                     <table id="locationMonitorTable" class="table-container">
                         <thead>
                         <tr>
@@ -77,6 +78,7 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="sessionMonitorDiv" role="tabpanel">
+                    The session monitor shows customers arriving late for their bookings.
                     <table id="sessionMonitorTable" class="table-container">
                         <thead>
                         <tr>
@@ -101,7 +103,7 @@
                 </div>
                 <div class="tab-pane fade" id="fraudDetectionDiv" role="tabpanel">
                     We define possibly fraudulent behavior when the same customer tries to make multiple
-                    bookings within one minute.
+                    bookings within one minute (realized with a sliding window).
                     <table id="fraudDetectionTable" class="table-container">
                         <thead>
                         <tr>
@@ -152,7 +154,7 @@
                         let cell1 = $('<td>').text(key);
                         let cell2 = $('<td>');
 
-                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable' || tableId === 'windowMonitorTable') {
+                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable' || tableId === 'windowMonitorTable' || tableId ==='sessionMonitorTable') {
                             cell2.text(value);
                         } else {
                             cell2.append(jsonToUl(value));
