@@ -154,7 +154,7 @@
                         let cell1 = $('<td>').text(key);
                         let cell2 = $('<td>');
 
-                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable' || tableId === 'windowMonitorTable' || tableId ==='sessionMonitorTable') {
+                        if (tableId === 'locationMonitorTable' || tableId === 'fraudDetectionTable' || tableId === 'windowMonitorTable') {
                             cell2.text(value);
                         } else {
                             cell2.append(jsonToUl(value));

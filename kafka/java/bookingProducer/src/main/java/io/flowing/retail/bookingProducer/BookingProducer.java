@@ -62,7 +62,6 @@ public class BookingProducer {
         for (int id = 1; id <= entries.size(); id++) {
             for (BookingEntry bookingEntry : entries) {
                 JSONObject bookingJson = Converters.toJSON(bookingEntry);
-                byte[] key = null;
                 String value = bookingJson.toString();
                 System.out.println("New Booking - " + value);
                 ProducerRecord<Integer, String> record = new ProducerRecord<>(TOPIC_NAME, bookingEntry.getBookingId(), value);

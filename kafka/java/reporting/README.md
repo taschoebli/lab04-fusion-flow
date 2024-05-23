@@ -52,5 +52,8 @@ Two windowed operations have been implemented. The first one is a tumbling windo
 
 ![WindowEventDateTimeCount](../../../docs/diagrams/topology_window_eventDateTimeCount.png)
 
-The second windowed operation is a hopping window...
+The second windowed operation is a sliding window, here we extract the bookingDateTime to find out when a customer made the booking, and aggregate-count it based on a group-by customer name. We materialize this aggregate-count as a kTable, which is queried by an interactive query, only returning customers that made more than 1 booking within 1 minute, which we deem fraudulent and/or a DDoS attack. The topology implementation can be found here: [FraudDetectionTopology](src/main/java/io/flowing/retail/reporting/topology/FraudDetectionTopology.java), while the interactive queries can be found here: [ReportingService](src/main/java/io/flowing/retail/reporting/application/ReportingService.java). Below you can see the sliding window topology.
+
+![FraudDetectionTopology](../../../docs/diagrams/topology_fraud_detection.png)
+
 
