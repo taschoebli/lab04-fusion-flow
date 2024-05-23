@@ -1,9 +1,13 @@
 # Reporting
 
 ## Stateless Operations
-The following stateless operations have been implemented in the [FilterProcessesToLocationsTopology](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/FilterProcessesToLocationsTopology.java) class:
-- **Filtering**: Filter the "bookings" stream by location and create three branches based on the location id. 
-![../../../docs//diagrams/topology_filter_arena.drawio.png](../../../docs//diagrams/topology_filter_arena.drawio.png)
+The following stateless operations that we got to know in the lectures have been implemented in the [FilterProcessesToLocationsTopology](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/FilterProcessesToLocationsTopology.java) class:
+
+- **Filtering**: We filter out the unused "timestamp" field (see JSON below), as this represents the time at which the booking has been entered on the real life SQL Server of the company
+- **Translation**: We translate the Customers name from cleartext to a hashed value, to protect customers identities. 
+- **Branching & Re-Keying**: We branch the data stream by their locationId, after which we use a re-key operation to assign the branches keys describing their booking location (Bern, St. Gallen or Zürich).
+
+![../../../docs//diagrams/topology_1.png](../../../docs//diagrams/topology_1.png)
 
 JSON Object for better understanding of the data received in a kafka stream:
 ```json
@@ -20,6 +24,13 @@ JSON Object for better understanding of the data received in a kafka stream:
   }
 ```
 
+These same stateless operations can be found in the [CombineStreamsAndPrepareForReportingTopology](src/main/java/io/flowing/retail/reporting/topology/CombineStreamsAndPrepareForReportingTopology.java).
+
+## Stateful Operations
+
+We have implemented the following stateful operations covered in the lecture:
+
+- 
 
 ## Interactive Queries
 In order to fulfill the requirement "Interactive queries" from exercise 9, several topologies have been introduced. The can all be queried from the [ReportingService](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/application/ReportingService.java) by applying the following methods:

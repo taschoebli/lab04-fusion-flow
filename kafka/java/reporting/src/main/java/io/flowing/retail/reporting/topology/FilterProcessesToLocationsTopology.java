@@ -67,7 +67,7 @@ public class FilterProcessesToLocationsTopology {
                         || anonymizedBookingEntry.getLocationId() == 31),
                 (k, anonymizedBookingEntry) -> (anonymizedBookingEntry.getLocationId() == 2));
 
-        // Name the branches
+        // step three and a half: re-key the new branches
         for (int i = 0; i < locationBranches.length; i++) {
             KStream<Integer, AnonymizedBookingEntry> branch = locationBranches[i];
 

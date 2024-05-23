@@ -1,0 +1,98 @@
+<mxfile host="app.diagrams.net" modified="2024-05-23T08:35:35.187Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0" etag="0qzp7bBJbgyjOiI2PDPt" scale="1" border="0" version="24.4.6" type="device">
+  <diagram name="Seite-1" id="xITzAWoCHMejRdA5lkqf">
+    <mxGraphModel dx="1014" dy="647" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-1" value="&lt;div&gt;Bookings&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="TeYwSJDQJ6puLv1XYmJL-1" target="TeYwSJDQJ6puLv1XYmJL-3" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="390" as="sourcePoint" />
+            <mxPoint x="400" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-3" value="Filter out timestamps" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-4" value="Translate to anonymize customers" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="TeYwSJDQJ6puLv1XYmJL-3" target="TeYwSJDQJ6puLv1XYmJL-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="390" as="sourcePoint" />
+            <mxPoint x="440" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-6" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="TeYwSJDQJ6puLv1XYmJL-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="350" as="sourcePoint" />
+            <mxPoint x="400" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-7" value="" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;" parent="1" target="TeYwSJDQJ6puLv1XYmJL-8" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="460" as="sourcePoint" />
+            <mxPoint x="470" y="490" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="450" y="460" />
+              <mxPoint x="450" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-8" value="Bookings Zürich" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="480" y="490" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-9" value="Bookings Bern" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="490" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-10" value="Bookings St.-Gallen" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="490" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-11" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.467;entryY=-0.028;entryDx=0;entryDy=0;entryPerimeter=0;edgeStyle=orthogonalEdgeStyle;" parent="1" target="TeYwSJDQJ6puLv1XYmJL-10" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="460" as="sourcePoint" />
+            <mxPoint x="430" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-12" value="Aggregated bookings count" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="580" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-13" value="Aggregated bookings count" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="580" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-14" value="Aggregated bookings count" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="480" y="580" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-15" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="TeYwSJDQJ6puLv1XYmJL-10" target="TeYwSJDQJ6puLv1XYmJL-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="440" as="sourcePoint" />
+            <mxPoint x="460" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="TeYwSJDQJ6puLv1XYmJL-9" target="TeYwSJDQJ6puLv1XYmJL-13" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="440" as="sourcePoint" />
+            <mxPoint x="460" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TeYwSJDQJ6puLv1XYmJL-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="TeYwSJDQJ6puLv1XYmJL-8" target="TeYwSJDQJ6puLv1XYmJL-14" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="440" as="sourcePoint" />
+            <mxPoint x="460" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kRQoYYCjFaxFHK_sjPSH-1" value="Branch &amp;amp; Re-key Router" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kRQoYYCjFaxFHK_sjPSH-3" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="kRQoYYCjFaxFHK_sjPSH-1" target="TeYwSJDQJ6puLv1XYmJL-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="460" as="sourcePoint" />
+            <mxPoint x="370" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
