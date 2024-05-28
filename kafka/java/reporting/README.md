@@ -78,4 +78,3 @@ The second windowed operation is a sliding window, here we extract the bookingDa
 
 // TODO: Write this
 
-
