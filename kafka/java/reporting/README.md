@@ -4,7 +4,12 @@
   //ToDo: Describe our application, its streams, the output, architecture and the business logic
 
 ## Architecture and ARDs
- // ToDo: describe
+
+We started off using Avro as a serialization scheme, traces of that can still be found in the topology [FilterProcessesToLocationsTopology](../../../kafka/java/reporting/src/main/java/io/flowing/retail/reporting/topology/FilterProcessesToLocationsTopology.java), 
+where we used avro to write to an output topic which was meant to make it integrable into other applications. After trying Avro for a while, we decided to switch back to a simple JSON based serialization, because working with Avro was tedious and not worth it for a student project with a pressing timeline. We recorded this decision in the 
+ADR [0004_SerializationMethodDecision](../../../docs/adr/0004_SerializationMethodDecision.md). 
+
+ // ToDo: continue describing our architecture
 
 ## Topics Covered from the Lecture
 ### Stateless Operations
