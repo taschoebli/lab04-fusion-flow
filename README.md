@@ -29,7 +29,9 @@ As resilience patterns, we use human interventions and stateful retries. In the 
 
 In our main process, the booking service, we implemented a stateful retry in case the customer chooses to pay by credit card. The service we implemented to process credit card payments would, in real life, contact the credit card processor to ensure that the payment has been processed successfully, but in our implementation we simulate this by declaring the booking as paid in 80% of the time, while throwing a Java exception signaling that the payment failed in 20% of the cases. Camunda automatically retries verifying the booking every minute, and it does that up to 5 times. If the payment still failed by the 5th try, the Java delegate throws an BPMN error, which triggers another human intervention pattern, where a customer representative can contact the customer to resolve any payment issues.  
 
+Stateful retry allows our software to be more autonomous and reduces human error handling. Since our example uses a third party payment service when the customer pays via credit card, we depend on the availability and stability of software that we have no control over, so it is appropriate to have an extra safety feature in place here, to increase resilience. Instead of having to introduce a complicated logic to deal with credit card payment failure, Camunda keeps the state of the booking in its system and retries to contact the service in predefined intervals, increasing the chance of a payment going through without anybody having to intervene.
 
+If the payment, despite all efforts, couldn't be completed, we have grounds to belief that something is wrong with the credit card itself. We fall back on a human employee who can get in contact with the customer and resolve the issue by mail or on the phone. This is another resilience pattern as introduced to us in the lectures.
 
 ## ADR (Architecture Decision Records)
 Please find all ADRs in the [docs/adr](docs/adr) folder.
@@ -75,16 +77,9 @@ Use the following credentials to log in:
 
 Or find them here for [main](kafka/java/booking/src/main/resources/application.yaml) and [sub](kafka/java/accounting/src/main/resources/application.yaml) process.
 
-### Start a new process
-To start a new process, access [this link.](http://localhost:8091/booking.html) Once you enter a date for your booking and press "book", you should be able to see that a new main process instance has started. 
-
-The sub process should be waiting for receiving the bank payment, as can be seen here:
-
-![docs/ProcessWaitingForPayment.png](docs/ProcessWaitingForPayment.png)
-
 ## Our process
-So far, we use Kafka as a message broker, passing messages between bounded contexts and processes.
-The main (=booking) process, as well as the sub (=accounting) process, is orchestrated using a Camunda process definition. 
+We use Kafka as a message broker, passing messages between bounded contexts/domains and processes.
+The main (=booking) process, as well as the sub (=accounting) process, is orchestrated using Camunda process definitions, here, Camunda is responsible for communicating within domains.
 
 Booking Process:
 ![docs/booking_process.png](docs/booking_process.png)
@@ -92,10 +87,30 @@ Booking Process:
 Accounting Process:
 ![docs/accounting_process.png](docs/accounting_process.png)
 
-The booking process waits for the Bank Payment Retrieved message, originating from the Accounting process, after it notifies the accounting process, that a new booking has been made. We skip the entire process, if the customer decided to pay by card, since then we already have collected the money and the booking is valid.
-The accounting process first passes the customer through an automatic booking review, where we access an external database to see if we have rejected this customer in the past. if this is the case, we flag the customer for a human review, where an accountant can take any necessary steps to deem a booking valid or invalid.
+When a customer creates a booking, and pays by invoice, the booking process notifies the accounting process, that a new booking has been made. It then waits for the Bank Payment Retrieved message, which is generated once the subprocess has completed. Parallel to the execution of the subprocess, our booking process sends the invoice by mail to the customer.
+
+If the customer decided to pay by card, we contact the card payment organization to see if the payment has been made. We retry this up to 5 times if no payment has been made, with 1 minute intervals between retries. If there is no payment after 5 minutes, our delegate throws a Camunda BPM error, causing our process to create a human review task to find out what's going on with this booking.
+
+The accounting subprocess first passes the customer through an automatic booking review, where we access an external database to see if we have rejected this customer in the past. if this is the case, we flag the customer for a human review, where an accountant can take any necessary steps to deem a booking valid or invalid.
 If the booking is deemed valid, either automatically through our system or by a human accountant, we set the process on hold and wait for the money to arrive. Our software waits for the arrival of a Kafka message from our bank, confirming that we received the money from the customer. Camunda automatically continues the process to cancel the order,
-if we do not receive any money within 30 days.
+if we do not receive any money within 30 days. In any case, we deem the booking valid (either cancelled or paid), and notify out main process that the accounting side of the booking is done.
+
+### Start a new process
+To start a new process, access [this link.](http://localhost:8091/booking.html) Once you enter a date, a payment method and a name for your booking, press "book". You should be able to see that a new main process instance has started. 
+
+We have set up some test cases to go through the different logic paths of our application:
+
+- To see the whole logic for a valid booking using invoice as a payment system, simply enter a date, a mail, and check the box "pay by invoice". The sub process should be waiting for receiving the bank payment, as can be seen here:
+
+![docs/ProcessWaitingForPayment.png](docs/ProcessWaitingForPayment.png)
+
+- If you want to test out the human resilience pattern within our subprocess, enter a date and check the "pay by invoice" box. Enter the following e-mail: "David.seger@bluewin.ch", as this is the e-mail address of a customer that has caused us a great deal of trouble in the past, and is thus on the blacklist for manual customer review. It should look like this in the subprocess cockpit:
+
+![docs/ProcessWaitingForHumanCustomerReview](docs/ProcessWaitingForHumanCustomerReview.png)
+
+- To see how our stateful retry fares, enter a date and an e-mail, but do not check the "pay by invoice" checkbox. Credit card payment fails in 1/5th of all cases, so you might have to trigger a few bookings to see a stateful retry (and even more bookings to get a case that has to be moved to further human review). If you are patient, you should be greeted with the following inside the cockpit of our main process:
+
+![docs/MainProcessStatefulRetry](docs/MainProcessStatefulRetry.png)
 
 ## Implementation Details and Related Architectural Decisions
 ### Main Process: Booking
@@ -114,6 +129,10 @@ Once again we opted for an event based trigger instead of a command, as this exe
 
 While the invoice gets sent out to the customer, the [InvoiceCreatedAdapter](kafka/java/booking/src/main/java/io/flowing/retail/booking/flow/InvoiceCreatedAdapter.java) delegate sends out a similar, but distinct, event via Kafka, which triggers the accounting subprocess. A event is sufficient in this case, since paying a bill can take up to 30 days anyway, so time is not of the essence.
 This branch now waits for a Camunda message “BankTransferRetrievedNew”, which will be triggered via Kafka event "PaymentHandled" by the accounting process, once that has dealt with the new booking. The Kafka event that triggers the message is caught in the bookings [MessageListener](kafka/java/booking/src/main/java/io/flowing/retail/booking/messages/MessageListener.java). The "BankTransferRetrievedNew" Camunda message signifies the end of the booking process.
+
+If the incoming booking request is paid by credit card, Camunda hands the booking to our [CreditCardAdapter](kafka/java/booking/src/main/java/io/flowing/retail/booking/flow/CreditCardAdapter.java). This delegate simulates contacting a third party payment service and checking the payment status. We use probability to fail 1/5th of all incoming credit card payments. When a credit card payment fails, we throw a Java exception. We decided on a delegate expression since Camunda is great at dealing with error coming from these type of implementations: Camunda automatically saves the booking state, and retries the delegate execution at a later time (we opted for one retry every minute, with 5 retries being the maximum). If a payment is still invalid after this time, the code opts for throwing a controlled BPM Error: We included the possibility of such an error in our process model, and added an execution branch that only gets accessed if that BPM error gets thrown. This branch includes a human task, meant to represent a customer service employee contacting the customer to resolve any payment issues.
+
+Using this combination of automatic, stateful retries on execution errors, controlled BPM errors that represent business errors, and human intervention if all else fails, we implemented a resilience pattern that improves our codes stability and adaptability to error cases.
 
 ### Sub Process: Accounting
 Our Accounting Microservice is subscribed to the kafka message sent out by the main process, we listen for it in the services [MessageListener](kafka/java/accounting/src/main/java/io/flowing/retail/accounting/messages/MessageListener.java).
@@ -159,7 +178,7 @@ All team members contributed equally to the group project.
 
 
 # Fusion Flow Assignment # 2
-In the second part of the project, focus was put on stream processing with kafka. 
+In the second part of the project, focus was put on stream processing with kafka. Please refer to [this README](kafka/java/reporting/README.md) for the hand-in report.
 
 ## Building the project
 To run the Flowing Retail project, assignment #2,  you first need to be sure that all the relevant projects, namely [bookingProducer](kafka/java/bookingProducer) and [reporting](kafka/java/reporting) have been built at least once: (Maven Window -> Run Maven Build "green play button" )
