@@ -176,6 +176,9 @@ All team members contributed equally to the group project.
 - We all did not have any experience with Kafka  & Camunda. We would have profited more from the guest lecture from the Camunda team (Niall Deehan) if we had more experience with the tool. It would have been great if Camunda 8 was introduced in the lecture, since it is the recommended version for new projects. We regret having started with Camunda 7.
 - Group projects with small group size (not more than 3 people) are more efficient and effective. We had a good communication and could easily coordinate our tasks.
 
+## Changes Since First Hand-In
+
+// ToDo: Describe our updates since the first hand-in (2 more resilience pattterns, Experiments of assignment 1)
 
 # Fusion Flow Assignment # 2
 In the second part of the project, focus was put on stream processing with kafka. Please refer to [this README](kafka/java/reporting/README.md) for the hand-in report.
