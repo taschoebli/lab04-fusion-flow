@@ -12,7 +12,7 @@ Within exercise 5 we were asked to discuss if Camunda 8 should be implemented in
 
 ## Decision
 
-We will not switch to Camunda 8. The current implementation fully meets the requirements which have been posed by the exercises and by the chosen business process/logic. Check the [README.md](../../README.md) for more information.
+We will not switch to Camunda 8. The current implementation fully meets the requirements which have been posed by the exercises and by the chosen business process/logic. Check the [README.md](../../README_Assignment1.md) for more information.
 
 
 ## Consequences
