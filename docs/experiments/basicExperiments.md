@@ -91,10 +91,18 @@ All messages are received without interruption. As per the definition of Apache 
 *Interpretation:* In case, we had an application which dynamically creates additional Kafka topic, you have to keep this issue in mind. But for our current use case, it is not relevant.
 
 ## The risk of data loss due to consumer lag
-### lecture definition etc
+### Consumer lag
+> For Kafka consumers, the most important thing to monitor is the consumer lag. Measured in number of messages, this is the difference between the last message pro‐ duced in a specific partition and the last message processed by the consumer. (Narkhede et al., p. 243)
+
 ### Experiment setup
+Let's try to artificially induce some latency to the Producer and Consumer in two different case.
+
+1. The Producer is now limited to sent a message every 500 ms. The Consumer is limited to process a received messages every 500 ms.
+2. The Producer is now limited to sent a message every 100 ms. The Consumer is limited to process a received messages every 900 ms.
+
 ### Experiment results
-*Interpretation:*
+Case 2 dramatically shows that the is huge pile of messages piling up. To fix this, we would need to amend the *log.retention.ms* or *log.retention.bytes* parameters within the Kafka service
+*Interpretation:* We have to keep in mind how consumer lag can affect every Kafka application eventually and that we can influence this by the retention configuration.
 
 ## The risk of data loss due to offset misconfigurations
 ### lecture definition etc
