@@ -73,10 +73,22 @@ As expected, in the first case messages are certainly lost as there is nothing p
 *Interpretation:* By adjusting Kafka’s reliability settings and simulating various failure scenarios, you can effectively examine the risk of data loss due to dropped messages. This helps to understand the trade-offs between the acks and retries parameter, such that we can configure Kafka for optimal durability in our use case.
 
 ## The outage of Zookeeper
-### lecture definition etc
+Let's try to artificially shutdown Zookeeper.
+
+### Apache Zookeeper
+> Apache Zookeeper is considered an integral part of a Kafka service as it maintain the list of brokers that are currently members of a cluster. (Narkhede et al., p. 95-96)
+
 ### Experiment setup
+1. Start the Kafka cluster, the Producer and finally the Consumer
+2. Messages are being sent
+3. Shutdown Zookeeper artificially by
+> docker-compose stop zookeeper
+4. Messages are *still* being sent
+5. Boot up Zookeeper again
+
 ### Experiment results
-*Interpretation:*
+All messages are received without interruption. As per the definition of Apache Zookeeper it is in control of managing the list of topics. Thus, during an outage of Zookeeper we would not be able to add new topics to Kafka.
+*Interpretation:* In case, we had an application which dynamically creates additional Kafka topic, you have to keep this issue in mind. But for our current use case, it is not relevant.
 
 ## The risk of data loss due to consumer lag
 ### lecture definition etc
