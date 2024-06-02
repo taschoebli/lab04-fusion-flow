@@ -148,3 +148,4 @@ All team members contributed equally to the group project.
 - We feel more comfortable about event-driven systems overall.
 - Complexity of debugging has increased
 - Time management was improved compared to assignment1 (there was much less time)
+- The book recommended in the lecture slides, does an excellent job to gain necessary theoretical knowledge and helps with the implementation as well

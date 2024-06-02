@@ -103,9 +103,3 @@ Let's try to artificially induce some latency to the Producer and Consumer in tw
 ### Experiment results
 Case 2 dramatically shows that the is huge pile of messages piling up. To fix this, we would need to amend the *log.retention.ms* or *log.retention.bytes* parameters within the Kafka service
 *Interpretation:* We have to keep in mind how consumer lag can affect every Kafka application eventually and that we can influence this by the retention configuration.
-
-## The risk of data loss due to offset misconfigurations
-### lecture definition etc
-### Experiment setup
-### Experiment results
-*Interpretation:*

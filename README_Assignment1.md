@@ -10,14 +10,13 @@ On the 9th of May, we have received feedback regarding our submission of Assignm
 
 ### Experimenting with Kafka
 The following experiments - as per exercise 1 - are documented [here](docs/experiments/basicExperiments.md):
-- The impact of load and batch size on processing latency,
-- the risk of data loss due to dropped messages,
-- the outage of Zookeeper,
-- the risk of data loss due to consumer lag,
-- the risk of data loss due to offset misconfigurations
+- The impact of load and batch size on processing latency
+- the risk of data loss due to dropped messages
+- the outage of Zookeeper
+- the risk of data loss due to consumer lag
 
 Additional experiments, such as the following, are presented [here](docs/experiments/additionalExperiments.pdf):
-- Offset misconfigurations based on [Lab02Part2-kafka-EyeTracking](https://github.com/scs-edpo/lab02Part2-kafka-EyeTracking)
+- The risk of data loss due offset misconfigurations based on [Lab02Part2-kafka-EyeTracking](https://github.com/scs-edpo/lab02Part2-kafka-EyeTracking)
 - Subscribing to a non-existent topic
 - Attempting to overwhelm a Kafka server with topics
 
