@@ -22,7 +22,7 @@ Additional experiments, such as the following, are presented [here](docs/experim
 - Attempting to overwhelm a Kafka server with topics
 
 ### Added complexity to assignment 1
-- We have added two more resistance pattern to boost complexity, please see [further down](#Our-process) for more details
+- To boost complexity, both one additional Human Intervention and one Stateful Retry has been added. Please see [further down](#Our-process) for more details about the updated booking and accounting contexts.
 
 ## General description
 This project simulates the possible process of a customer booking an event at the Fusion Arena St. Gallen. Thereby, focus is on customers that pay via invoice. Since there is a need for a bank payment without live payment processing, the process has to make sure and check that the payment has been received before the booking is confirmed. The customer is given a time of 30 days to make the payment.
