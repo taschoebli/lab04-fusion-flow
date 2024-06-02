@@ -4,6 +4,12 @@ the implementation of [flowing retail](https://github.com/scs-edpo/lab04-flowing
 We use Apache Kafka and Camunda Process orchestration to facilitate our workflow. 
 
 ## Changes Since First Hand-In
+On the 9th of May, we have received feedback regarding our submission of Assignment 1. Besides improving the code documentation and more in-depth argumentation in the ADRs, we have also adressed to two major points of criticism:
+1. Incomplete submission of exercise 1
+2. Too few complexity in patterns and BPMN models
+
+Please see our completely redone experiments of exercise 1 here.
+
 // ToDo Christoph: Describe our updates since the first hand-in (2 more resilience pattterns, Experiments of assignment 1)
 
 
