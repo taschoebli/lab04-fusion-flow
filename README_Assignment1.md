@@ -5,13 +5,24 @@ We use Apache Kafka and Camunda Process orchestration to facilitate our workflow
 
 ## Changes Since First Hand-In
 On the 9th of May, we have received feedback regarding our submission of Assignment 1. Besides improving the code documentation and more in-depth argumentation in the ADRs, we have also adressed to two major points of criticism:
-1. Incomplete submission of exercise 1
+1. Incomplete submission of exercise 1 "Experimenting with Kafka"
 2. Too few complexity in patterns and BPMN models
 
-Please see our completely redone experiments of exercise 1 here.
+### Experimenting with Kafka
+The following experiments - as per exercise 1 - are documented [here](docs/experiments/basicExperiments.md):
+- The impact of load and batch size on processing latency,
+- the risk of data loss due to dropped messages,
+- the outage of Zookeeper,
+- the risk of data loss due to consumer lag,
+- the risk of data loss due to offset misconfigurations
 
-// ToDo Christoph: Describe our updates since the first hand-in (2 more resilience pattterns, Experiments of assignment 1)
+Additional experiments, such as the following, are presented [here](docs/experiments/additionalExperiments.pdf):
+- Offset misconfigurations based on [Lab02Part2-kafka-EyeTracking](https://github.com/scs-edpo/lab02Part2-kafka-EyeTracking)
+- Subscribing to a non-existent topic
+- Attempting to overwhelm a Kafka server with topics
 
+### Added complexity to assignment 1
+- We have added two more resistance pattern to boost complexity, please see [further down](#Our-process) for more details
 
 ## General description
 This project simulates the possible process of a customer booking an event at the Fusion Arena St. Gallen. Thereby, focus is on customers that pay via invoice. Since there is a need for a bank payment without live payment processing, the process has to make sure and check that the payment has been received before the booking is confirmed. The customer is given a time of 30 days to make the payment.
